@@ -34,6 +34,9 @@ This directory contains the sharded implementation stories for the 2-player codi
 - [Story Sprint 2-2: Constrained Movement (M)](./story-sprint2-2-constrained-movement.md) - Path-constrained movement with detailed feedback
 - [Story Sprint 2-3: Theme Labels (XS)](./story-sprint2-3-theme-labels.md) - Child-friendly theme system
 
+### Future Epics
+- [Epic 1: Flexible Players & Personalization](../epics/epic-1-flexible-players/README.md) - 1-4 player system with personalization features
+
 ## Supporting Documents
 - [Implementation Priority Order](./implementation-priority-order.md) - Recommended implementation sequence
 - [Story Dependencies](./story-dependencies.md) - Story dependency relationships

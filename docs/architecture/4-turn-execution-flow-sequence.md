@@ -1,18 +1,36 @@
 # 4) Turn & Execution Flow (sequence)
 
-1. **Editing (Player N)**: taps direction, then number → append `CmdToken`.
-2. **Run**:
+## Turn Management *(ENHANCED)*
 
-   * Lock inputs; set `status=executing`.
-   * For each token: iterate `n` steps with `tickMs`; for each step:
+1. **Game Start**: Initialize with default single player (Player 1)
+2. **Player Setup**: Parent can add/remove players (1-4 total)
+3. **Turn Order**: Round-robin through active players: `[1]` → `[1,2]` → `[1,2,3]` → `[1,2,3,4]`
+4. **Turn Switch**: `getNextPlayer(current, activePlayers)` → next active player
+5. **Player Elimination**: Inactive players skip turns automatically
 
-     * `simulate`; if wall/bounds → `shake(cell)`, toast “Bumped at step k”; `crashes[N]++`; stop run.
-     * Else move, push to `trails[N]`; micro-confetti tick.
-     * If `goal` → one-shot mega-confetti; increment `scores[N]`; stop run.
-3. **Switch Turn**:
+## Execution Flow
 
-   * `status=idle`; `currentPlayer = other`.
-   * Clear only **that player’s queue**; keep trails/positions.
+1. **Current Player's Turn**: `currentPlayer` builds command queue
+2. **Queue Execution**: Run commands for current player only
+3. **Result Handling**: 
+   - **Success**: Switch to next active player
+   - **Wall Hit**: Switch to next active player
+   - **Goal Reached**: Win celebration, then next player or game end
+4. **Turn Transition**: Clear current player's queue, update `currentPlayer`
 
-**Note:** Both players start at same `start`. You can optionally reset both via “Play Again”.
-
+## Player State Transitions
+
+```
+Single Player: [1] → [1] (loop)
+Two Players:   [1] → [2] → [1] (loop)
+Three Players: [1] → [2] → [3] → [1] (loop)
+Four Players:  [1] → [2] → [3] → [4] → [1] (loop)
+```
+
+## Dynamic Player Management
+
+- **Add Player**: Insert into `activePlayerIds`, initialize state
+- **Remove Player**: Remove from `activePlayerIds`, cleanup state
+- **Reorder Players**: Update `activePlayerIds` sequence
+- **Player Deactivation**: Mark `isActive: false`, skip in turn order
+

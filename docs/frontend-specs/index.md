@@ -14,3 +14,4 @@
   - [9) QA (visual + UX)](#9-qa-visual-ux)
   - [10) Future-proof Hooks (non-blocking v0)](#10-future-proof-hooks-non-blocking-v0)
   - [11) Build Notes (no code, just choices)](#11-build-notes-no-code-just-choices)
+  - [12) Player Management Components](#12-player-management-components)

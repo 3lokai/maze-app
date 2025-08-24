@@ -1,4 +1,4 @@
-# 5) State Machine (v0)
+# 5) State Machine (v1)
 
 ```
            +---------+
@@ -7,7 +7,7 @@
                 |
                 v
            +----+----+
-           | Editing |  (Player N builds queue)
+           | Editing |  (Current Player builds queue)
            +----+----+
                 |
              Run/Step
@@ -26,4 +26,31 @@
                 v
               Idle
 ```
-
+
+## Player Management States *(NEW)*
+
+```
+           +---------+
+           | Single  |  (Default: 1 player)
+           +----+----+
+                |
+         Add Player
+                v
+           +----+----+
+           | Multi   |  (2-4 players)
+           +----+----+
+                |
+         Remove Player
+                v
+           +---------+
+           | Single  |
+           +---------+
+```
+
+## Turn Management Logic
+
+- **Single Player**: `currentPlayer` always Player 1
+- **Multi Player**: Round-robin through `activePlayerIds`
+- **Player Removal**: Automatically adjust turn order
+- **Player Addition**: Insert into turn sequence
+

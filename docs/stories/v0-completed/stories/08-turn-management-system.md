@@ -243,6 +243,6 @@ Ready for Review
 
 ### Gate Status
 
-Gate: PASS → docs/qa/gates/story-8-turn-management-system.yml
+Gate: PASS → docs/qa/completed/story-8-turn-management-system.yml
 
 

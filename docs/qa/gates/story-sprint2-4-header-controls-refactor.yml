@@ -112,5 +112,5 @@ files_modified:
   - src/app/page.tsx
 
 dependencies:
-  - story-9b-accessibility-implementation
-  - story-sprint2-6-stats-drawer
+  - v0-completed/stories/09b-accessibility-implementation
+  - sprints/sprint-2/stories/06-stats-drawer

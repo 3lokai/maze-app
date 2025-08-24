@@ -174,6 +174,6 @@ Ready for Review
 
 ### Gate Status
 
-Gate: PASS → docs/qa/gates/story-7-goal-achievement-celebration.yml
+Gate: PASS → docs/qa/completed/story-7-goal-achievement-celebration.yml
 
 

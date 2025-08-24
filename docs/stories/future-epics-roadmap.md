@@ -22,48 +22,53 @@
 
 ## 📋 Epic Roadmap
 
-### Epic: v1 — Multipliers & Scoreboard
-* **Multipliers Badge**: "Loop Learner" achievement system for U×N token usage.
-* **Enhanced Scoreboard**: Turn-based streak tracking, best times, session persistence.
-* **Basic Persistence**: localStorage wrapper for session scores and achievements.
+### Epic 1 — Flexible Players & Personalization
+* **Default Single-Player Mode**: Game starts with 1 player ready, no setup required.
+* **Multi-Player Support**: Parent can add up to 4 players with round-robin turn order.
+* **Player Personalization**: Players choose names + animal emoji sprites (🐢🐰🦊🦁).
+* **Adaptive Record Panel**: Dynamic rows for 1–4 players, shows emoji + stats clearly.
+* **Enhanced Record Panel**: Clear stats display with wins, crashes, steps per player.
+* **Queue Token Polish**: Colored command pills with player-specific styling.
+* **Progress Bar Upgrade**: Step-by-step progress tracking with player colors.
+* **Parent Settings → Player Management**: Add/remove/edit players, emoji selection, name customization.
 
-### Epic: v2 — Parent Controls & Settings
-* **Maze Customization**: Grid size controls (5×5, 10×10, 15×15) with responsive scaling.
-* **Player Management**: Up to 4 players with names, colors, and optional emoji sprites.
-* **Theme System**: Default / High Contrast / Soft themes with CSS custom properties.
-* **Settings Persistence**: localStorage for parent preferences and player configurations.
-* **Player Setup Screen**: Names, colors, emoji selection interface.
-* **NEW:** Multiple maze layout selection leveraging existing path creation system.
+### Epic 2 — Maps & Maze Renderer Stability (UX Overhaul)
+* **Multiple Maps**: Add multiple maps with rising complexity (small → medium → large).
+* **Larger Grid Support**: 15×15, 20×20 grid support with responsive scaling.
+* **Responsive Scaling**: Preserve square cells across all devices with aspect-ratio lock + overlay labels.
+* **Aspect-Ratio Lock**: Cells stay perfect squares across all devices.
+* **Label Overlays**: Labels & emojis as overlays (no cell stretching).
+* **Horizontal Viewport**: Scrolling viewport with follow-camera for large mazes.
+* **Viewport UX**: Ensure maze + right rail work gracefully on small screens; responsive stack mode for phones.
+* **Renderer Performance**: Optimize rendering for big mazes and smooth animations.
+* **Map Library Loader**: Quick swap between layouts with preview system.
+* **UX Overhaul Polish**: Header-centric controls, simplified rail, bigger buttons, progress bar, tap bounce animations.
 
-### Epic: v3 — Hazards & Complications
-* **Lion Hazard**: "Miss a turn" trap mechanic with visual feedback.
-* **Door & Key System**: Key collectible with inventory state management.
-* **Hunter Hazard**: Instant elimination mechanic with game state updates.
-* **Hazard Registry**: Configurable step-check functions for extensible complications.
-* **Inventory System**: Per-player item tracking (keys, shields, speed boots).
-* **NEW:** Enhanced path validation with hazard detection.
+### Epic 3 — Parent Section & Landing Page
+* **Landing Page**: Next.js marketing style page explaining coding pedagogy and benefits.
+* **Player Management**: Add/remove/edit players, emoji selection, name customization (shared with Epic 1).
+* **Game Settings**: Grid size, hazards toggle, themes, accessibility controls.
+* **Local Persistence (M)**: Save players, settings, and stats in localStorage for immediate use.
+* **Supabase Upgrade (M)**: Replace localStorage with Supabase tables for multi-device persistence.
+* **Parent Auth (M)**: Simple magic link login for parents.
+* **Persistence Layer**: localStorage / Supabase integration for settings + stats.
+* **Productization**: Bridge "toy" → full-fledged edtech web app with professional presentation.
+* **Settings Dashboard**: Comprehensive parent control panel with progress tracking.
 
-### Epic: v4 — Campaign Mode & Learning Progression
-* **Level System**: JSON-based level definitions with feature flags and hazard configurations.
-* **World Map UI**: Grid of "islands" or "badges" with locked/unlocked states.
-* **Progress Tracking**: Per-player concept mastery tracking ("Sequencing ✅", "Loops ✅").
-* **Badge System**: "Path Finder", "Loop Learner", "Fast Thinker" achievements.
-* **Campaign Loader**: Dynamic level loading with progress persistence.
-* **NEW:** Leverage existing path creation system for dynamic maze generation.
-
-### Epic: v5 — Advanced Features
-* **Maze Randomizer**: Seed-based DFS/Prim generator with configurable complexity.
-* **Power-ups**: "Speed boots" (skip 2 steps), "Shield" (survive hunter once).
-* **Sprite System**: Emoji animals (🐰 🐢 🐯 🐸) with accessibility support.
-* **Replay System**: Export kid's run as GIF or replay sequence.
-* **Analytics Dashboard**: Basic stats for parents (avg steps, errors, successful runs).
-* **Assist Mode**: Ghost preview of path before execution.
-* **Sound Effects**: Toggleable audio feedback (chimes, confetti pops).
-* **Multilingual Support**: Localized U/D/L/R tokens ("Haut/Bas/Gauche/Droite").
-* **NEW:** Advanced path visualization and editing tools.
+### Epic 4 — Chapter Selection / Curriculum Mode
+* **Chapter Screen**: Entry through structured curriculum (sequencing, multipliers, checks, hazards).
+* **Coding Concepts per Chapter**: Sequencing → Multipliers → Checks/Conditionals → Hazards.
+* **Map-Chapter Integration**: Maps tied to chapters with difficulty ramping.
+* **Unlock Progression**: Badge system and chapter completion tracking.
+* **Chapter Badges**: Visual rewards (stickers, icons) per concept mastered.
+* **Parent Dashboard**: Track child's progress (chapters mastered, concepts learned).
+* **Curriculum Structure**: Structured pedagogy with clear learning objectives.
+* **Progress Analytics**: Detailed insights into learning progression and concept mastery.
 
 ### Epic: Accessibility Enhancements
 * **Color-blind Friendly**: Alternative color schemes and high-contrast options.
+* **Soft Mode**: Warm palette theme for reduced visual stress.
+* **Reduced Motion Defaults**: Animations subtle by default on mobile.
 * **Text-to-Speech**: Audio feedback for moves, actions, and achievements.
 * **Enhanced ARIA**: Comprehensive screen reader support and keyboard navigation.
 * **Focus Management**: Logical tab order and focus indicators.
@@ -72,9 +77,13 @@
 ### Epic: Technical Infrastructure
 * **Config-driven Architecture**: JSON-based level definitions with feature flags.
 * **Hazard Registry**: Pluggable complication framework with step-check functions.
+* **Executor Extensibility**: Allow hazards / checks as pluggable step evaluators.
 * **Player Array Expansion**: Support for 1-4 players with flexible state management.
 * **Campaign Loader**: Dynamic level loading from JSON definitions.
 * **Theme System**: CSS custom properties for multiple theme support.
+* **Persistence Hooks**: Abstracted storage interface (local first, Supabase later).
+* **Data Model Spec**: Players, maps, settings, stats, progress.
+* **Migration Plan**: localStorage → Supabase with minimal code change.
 * **Localization**: i18n system for multilingual token support.
 * **NEW:** Path creation and visualization system ready for advanced features.
 
@@ -89,11 +98,10 @@
 - Theme system with accessibility support
 
 ### **Next Phase Focus**
-- **v1**: Build on existing path system for multipliers and persistence
-- **v2**: Extend theme system for multiple layouts and player management
-- **v3**: Enhance path validation for hazard detection
-- **v4**: Leverage path creation for dynamic maze generation
-- **v5**: Advanced path visualization and editing tools
+- **Epic 1**: Build flexible player system with personalization features
+- **Epic 2**: Scale maze renderer and UX for larger, more complex maps
+- **Epic 3**: Productize with landing page and parent-facing features
+- **Epic 4**: Implement structured curriculum with progression tracking
 
 ### **Technical Debt & Infrastructure**
 - Path creation system provides solid foundation for all future epics
@@ -105,21 +113,30 @@
 
 ## 🚀 Quick Wins (Ready to Implement)
 
-### **Immediate Enhancements**
+### **Epic 1 Quick Wins**
+1. **Single Player Default**: Modify game store to start with 1 player
+2. **Player Array Expansion**: Extend to support 1-4 players
+3. **Emoji Picker Component**: Reusable emoji selection interface
+4. **Record Panel Enhancement**: Adaptive stats display for variable players
+
+### **Epic 2 Quick Wins**
 1. **Multiple Maze Layouts**: Leverage existing layout system for variety
-2. **Path Preview Mode**: Build on existing path visualization
-3. **Advanced Theme Customization**: Extend current theme system
-4. **Performance Optimization**: Optimize existing path generation algorithms
+2. **Aspect Ratio Lock**: Ensure perfect squares across devices
+3. **Horizontal Scrolling**: Viewport with follow-camera for large mazes
+4. **Renderer Performance**: Optimize for larger grid sizes
 
-### **Medium-term Features**
-1. **Dynamic Path Generation**: Extend DFS algorithm for procedural mazes
-2. **Interactive Path Editing**: Build on existing path visualization
-3. **Advanced Collision Detection**: Enhance existing validation system
-4. **Path Analytics**: Track player path efficiency using existing system
+### **Epic 3 Quick Wins**
+1. **Landing Page**: Next.js marketing page with coding pedagogy
+2. **Player Management**: Add/remove/edit players, emoji selection
+3. **Game Settings**: Grid size, hazards toggle, theme controls
+4. **Local Persistence**: Save players, settings, and stats in localStorage
+5. **Settings Dashboard**: Parent control panel with progress tracking
 
-### **Long-term Vision**
-1. **AI Path Assistance**: Use existing path system for intelligent hints
-2. **Multi-dimensional Mazes**: Extend path creation for 3D/4D concepts
-3. **Collaborative Path Building**: Multi-player path creation tools
-4. **Path-based Learning Analytics**: Advanced educational insights
+### **Epic 4 Quick Wins**
+1. **Chapter Screen**: Structured curriculum entry point
+2. **Coding Concepts per Chapter**: Sequencing → Multipliers → Checks/Conditionals → Hazards
+3. **Map-Chapter Integration**: Tie maps to learning objectives
+4. **Chapter Badges**: Visual rewards per concept mastered
+5. **Unlock System**: Badge and progression tracking
+6. **Parent Dashboard**: Learning progress analytics
 
