@@ -1,0 +1,110 @@
+/* High Contrast Theme - Updated to match globals.css .hc class */
+.hc {
+  --background: oklch(0.000 0.000 0);
+  --foreground: oklch(1.000 0.000 0);
+  --card: oklch(0.000 0.000 0);
+  --card-foreground: oklch(1.000 0.000 0);
+  --popover: oklch(0.000 0.000 0);
+  --popover-foreground: oklch(1.000 0.000 0);
+  --primary: oklch(0.600 0.200 120.00000000000001);
+  --primary-foreground: oklch(1.000 0.000 0);
+  --secondary: oklch(0.600 0.200 260.00000000000006);
+  --secondary-foreground: oklch(1.000 0.000 0);
+  --muted: oklch(0.150 0.000 0);
+  --muted-foreground: oklch(0.800 0.000 0);
+  --accent: oklch(0.150 0.000 0);
+  --accent-foreground: oklch(1.000 0.000 0);
+  --destructive: oklch(0.600 0.200 25.000000000000004);
+  --destructive-foreground: oklch(1.000 0.000 0);
+  --border: oklch(0.700 0.000 0);
+  --input: oklch(0.700 0.000 0);
+  --ring: oklch(1.000 0.000 0);
+  --radius: 0.5rem;
+}
+
+/* Reduced Motion */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Large Text */
+.large-text {
+  font-size: 1.2em;
+}
+
+.large-text h1 {
+  font-size: 2.5em;
+}
+
+.large-text h2 {
+  font-size: 2em;
+}
+
+.large-text h3 {
+  font-size: 1.75em;
+}
+
+.large-text p,
+.large-text span,
+.large-text div {
+  font-size: 1.2em;
+  line-height: 1.6;
+}
+
+/* Focus indicators for better accessibility */
+*:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* High contrast focus indicators */
+.hc *:focus {
+  outline: 3px solid oklch(0.600 0.200 120.00000000000001);
+  outline-offset: 3px;
+}
+
+/* Minimum touch target sizes */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+

@@ -1,0 +1,129 @@
+/* Collision feedback animations */
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+@keyframes flashRed {
+  0% { background-color: transparent; }
+  50% { background-color: rgb(239 68 68 / 0.8); }
+  100% { background-color: transparent; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Utility classes for collision animations */
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-flash-red {
+  animation: flashRed 0.6s ease-in-out;
+}
+
+.animate-pulse-error {
+  animation: pulse 0.3s ease-in-out 3;
+}
+
+/* Combination animation for collision */
+.collision-cell {
+  animation: 
+    shake 0.5s ease-in-out,
+    flashRed 0.6s ease-in-out;
+}
+
+/* Button bounce animation */
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6);
+  }
+}
+
+@keyframes ghostTrail {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.3; }
+}
+
+/* Utility classes for UI animations */
+.animate-bounce {
+  animation: bounce 0.3s ease-in-out;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-ghost-trail {
+  animation: ghostTrail 2s ease-in-out infinite;
+}
+
+/* Enhanced button interactions */
+.button-bounce:active {
+  animation: bounce 0.1s ease-in-out;
+}
+
+/* Glow effect for active player */
+.player-glow {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.player-glow:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+}
+
+/* Cross-platform emoji rendering */
+.emoji-fallback {
+  font-family: 
+    "Apple Color Emoji",      /* iOS, macOS */
+    "Segoe UI Emoji",         /* Windows */
+    "Noto Color Emoji",       /* Android, Linux */
+    "Twitter Color Emoji",    /* Twitter fallback */
+    "EmojiOne Color",         /* EmojiOne fallback */
+    emoji,                    /* Generic emoji */
+    monospace;                /* Final fallback */
+  font-feature-settings: "liga" off;
+  font-variant-emoji: emoji;
+  text-rendering: optimizeSpeed;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-bounce,
+  .animate-glow,
+  .animate-ghost-trail,
+  .button-bounce:active {
+    animation: none;
+  }
+  
+  .collision-cell {
+    animation: flashRed 0.6s ease-in-out;
+  }
+  
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .emoji-fallback {
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  }
+}
