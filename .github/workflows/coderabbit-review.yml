@@ -1,0 +1,126 @@
+name: CodeRabbit Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, develop]
+
+jobs:
+  coderabbit-review:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install CodeRabbit
+        run: npm install -g @coderabbit/cli
+      
+      - name: Run CodeRabbit analysis
+        env:
+          CODERABBIT_API_KEY: ${{ secrets.CODERABBIT_API_KEY }}
+          CODERABBIT_PROJECT_ID: ${{ secrets.CODERABBIT_PROJECT_ID }}
+        run: |
+          coderabbit analyze \
+            --format markdown \
+            --output .coderabbit/report.md \
+            --verbose
+      
+      - name: Upload CodeRabbit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coderabbit-report
+          path: .coderabbit/report.md
+          retention-days: 30
+      
+      - name: Comment PR with CodeRabbit report
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = '.coderabbit/report.md';
+            
+            if (fs.existsSync(reportPath)) {
+              const report = fs.readFileSync(reportPath, 'utf8');
+              
+              // Create comment with report
+              const comment = `## 🤖 CodeRabbit Analysis Report
+              
+              ${report}
+              
+              ---
+              *This report was generated automatically by CodeRabbit.*`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+      
+      - name: Fail on critical issues
+        run: |
+          if grep -q "severity: error" .coderabbit/report.md; then
+            echo "❌ Critical issues found in CodeRabbit analysis"
+            exit 1
+          fi
+      
+      - name: Quality gate check
+        run: |
+          # Check coverage
+          if grep -q "coverage.*below.*80%" .coderabbit/report.md; then
+            echo "❌ Code coverage below 80%"
+            exit 1
+          fi
+          
+          # Check complexity
+          if grep -q "complexity.*above.*10" .coderabbit/report.md; then
+            echo "❌ Cyclomatic complexity above 10"
+            exit 1
+          fi
+          
+          echo "✅ Quality gates passed"
+
+  # Additional quality checks
+  quality-checks:
+    runs-on: ubuntu-latest
+    needs: coderabbit-review
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linting
+        run: npm run lint
+      
+      - name: Run type checking
+        run: npm run type-check
+      
+      - name: Run tests
+        run: npm run test
+      
+      - name: Build project
+        run: npm run build

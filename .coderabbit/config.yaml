@@ -1,0 +1,151 @@
+# CodeRabbit configuration for maze-app
+project:
+  name: "maze-app"
+  description: "Next.js 15 + React 19 maze game with flexible player management"
+  version: "1.0.0"
+
+# Review settings
+review:
+  auto_approve: false
+  require_approval: true
+  max_reviewers: 2
+  min_approvals: 1
+  
+# Quality gates
+quality:
+  min_coverage: 80
+  max_complexity: 10
+  require_tests: true
+  max_duplication: 5
+  
+# Integration
+integrations:
+  github:
+    enabled: true
+    webhook_secret: "${CODERABBIT_WEBHOOK_SECRET}"
+    auto_comment: true
+    status_checks: true
+  
+# Custom rules for maze-app
+rules:
+  - name: "TypeScript strict mode"
+    pattern: "*.ts,*.tsx"
+    checks:
+      - "typescript-strict"
+      - "no-any"
+      - "no-unused-vars"
+      - "no-implicit-any"
+      - "prefer-const"
+  
+  - name: "React best practices"
+    pattern: "*.tsx"
+    checks:
+      - "react-hooks"
+      - "react-jsx-key"
+      - "react-no-array-index-key"
+      - "react-hooks-exhaustive-deps"
+      - "react-no-unused-state"
+  
+  - name: "Component structure"
+    pattern: "src/components/**/*.tsx"
+    checks:
+      - "component-naming"
+      - "props-interface"
+      - "shadcn-patterns"
+      - "component-single-responsibility"
+  
+  - name: "State management"
+    pattern: "src/store/**/*.ts"
+    checks:
+      - "zustand-patterns"
+      - "state-immutability"
+      - "no-direct-mutation"
+  
+  - name: "Hook patterns"
+    pattern: "src/hooks/**/*.ts"
+    checks:
+      - "hook-naming"
+      - "hook-dependencies"
+      - "custom-hook-patterns"
+  
+  - name: "Type definitions"
+    pattern: "src/types/**/*.ts"
+    checks:
+      - "type-naming"
+      - "interface-vs-type"
+      - "branded-types"
+  
+  - name: "Utility functions"
+    pattern: "src/lib/**/*.ts"
+    checks:
+      - "function-naming"
+      - "pure-functions"
+      - "error-handling"
+  
+  - name: "Accessibility"
+    pattern: "src/components/**/*.tsx"
+    checks:
+      - "aria-labels"
+      - "semantic-html"
+      - "keyboard-navigation"
+      - "color-contrast"
+  
+  - name: "Performance"
+    pattern: "src/**/*.{ts,tsx}"
+    checks:
+      - "no-unnecessary-re-renders"
+      - "memo-usage"
+      - "callback-optimization"
+      - "bundle-size"
+
+# Custom patterns for maze-app specific rules
+patterns:
+  - name: "shadcn-patterns"
+    description: "Ensure components follow shadcn/ui patterns"
+    rules:
+      - "use-cn-utility"
+      - "proper-variant-props"
+      - "consistent-styling"
+  
+  - name: "branded-types"
+    description: "Ensure proper use of branded types"
+    rules:
+      - "magnitude-1-to-10-validation"
+      - "position-type-safety"
+      - "command-type-safety"
+
+# Severity levels
+severity:
+  error:
+    - "typescript-strict"
+    - "react-hooks-exhaustive-deps"
+    - "no-any"
+    - "security-vulnerabilities"
+  
+  warning:
+    - "complexity"
+    - "duplication"
+    - "coverage"
+    - "performance-anti-patterns"
+  
+  info:
+    - "style-consistency"
+    - "documentation"
+    - "naming-conventions"
+
+# Auto-fix settings
+auto_fix:
+  enabled: true
+  patterns:
+    - "formatting"
+    - "imports"
+    - "unused-vars"
+    - "prefer-const"
+
+# Reporting
+reporting:
+  format: "markdown"
+  include_summary: true
+  include_details: true
+  include_suggestions: true
+  group_by_severity: true

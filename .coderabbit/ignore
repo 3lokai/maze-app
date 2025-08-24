@@ -1,0 +1,55 @@
+# Ignore generated files
+.next/
+node_modules/
+*.tsbuildinfo
+.env.local
+.env.production
+.env.development
+
+# Ignore build artifacts
+dist/
+build/
+out/
+
+# Ignore documentation updates (unless specifically requested)
+docs/qa/completed/
+*.md
+
+# Ignore data files
+public/data/
+*.json
+
+# Ignore test coverage reports
+coverage/
+*.lcov
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore temporary files
+*.tmp
+*.temp
+.cache/
+
+# Ignore BMad core files (internal tooling)
+.bmad-core/
+.claude/
+
+# Ignore Cursor IDE files
+.cursor/
