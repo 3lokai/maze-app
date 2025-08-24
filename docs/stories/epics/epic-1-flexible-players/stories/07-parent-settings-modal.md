@@ -1,10 +1,10 @@
-# Story Epic1-7 — Parent Settings Modal (M)
+# Story Epic1-7 — Basic Settings Modal (S)
 
 ## 📋 Story Overview
 
 **Epic**: Epic 1 — Flexible Players & Personalization  
-**Priority**: Medium - Management interface  
-**Size**: Medium (M)  
+**Priority**: Medium - Management interface foundation  
+**Size**: Small (S) - Reduced from Medium to address QA concerns  
 **Dependencies**: Stories Epic1-3, Epic1-4 (Player Names & Emojis, Record Panel UI)
 
 ---
@@ -12,16 +12,17 @@
 ## 🎯 User Story
 
 **As a** parent  
-**I want** a place to manage players and personalization  
-**So that** setup is easy and hidden from kids
+**I want** a simple settings modal to manage players  
+**So that** I can add and remove players easily
 
 ---
 
 ## ✅ Acceptance Criteria
 
-- [ ] ⚙️ Settings → modal with tabs (Players, Themes, Accessibility)
-- [ ] Players tab: add/remove, edit name, pick emoji
-- [ ] Accessibility tab reuses HC/Soft/Reduced Motion toggles
+- [ ] ⚙️ Settings → simple modal (no tabs initially)
+- [ ] Player management: add/remove players (max 4)
+- [ ] Edit player name and emoji
+- [ ] Live preview of changes in record panel
 
 ---
 
@@ -31,15 +32,12 @@
 
 **Steps**:
 1. Click gear icon (⚙️) to open settings modal
-2. Verify modal opens with tabbed interface
-3. Navigate to "Players" tab
-4. Add new player with name and emoji
-5. Edit existing player name/emoji
-6. Remove a player
-7. Verify record panel updates live
-8. Navigate to "Accessibility" tab
-9. Verify existing accessibility controls are present
-10. Test settings persistence across sessions
+2. Verify modal opens with simple interface (no tabs)
+3. Add new player with name and emoji
+4. Edit existing player name/emoji
+5. Remove a player (minimum 1 player required)
+6. Verify record panel updates live
+7. Test settings persistence across sessions
 
 ---
 
@@ -47,32 +45,20 @@
 
 ### Core Changes Required
 
-1. **Settings Modal Component**
-   - Create comprehensive settings modal component
-   - Implement tabbed interface (Players, Themes, Accessibility)
+1. **Simple Settings Modal Component**
+   - Create basic settings modal component (no tabs)
+   - Implement player management interface
    - Ensure proper modal behavior (open/close, backdrop)
    - Add responsive design for mobile
 
-2. **Tabbed Interface Implementation**
-   - Build tab navigation system
-   - Implement content switching between tabs
-   - Ensure proper tab state management
-   - Add visual feedback for active tab
-
-3. **Player Management UI**
-   - Build player management interface in Players tab
+2. **Player Management UI**
+   - Build simple player management interface
    - Implement add/remove player functionality
    - Add edit name/emoji capabilities
-   - Ensure proper validation and error handling
+   - Ensure proper validation (max 4 players, min 1 player)
 
-4. **Accessibility Integration**
-   - Reuse existing accessibility controls
-   - Integrate HC/Soft/Reduced Motion toggles
-   - Ensure proper accessibility compliance
-   - Maintain existing functionality
-
-5. **Settings Persistence**
-   - Implement settings persistence layer
+3. **Settings Persistence**
+   - Implement basic settings persistence
    - Store player configurations in localStorage
    - Add data migration for existing settings
    - Ensure backward compatibility
@@ -80,53 +66,45 @@
 ### Files to Modify
 
 - `src/components/SettingsDropdown.tsx` - Replace with modal
-- `src/components/AccessibilitySettings.tsx` - Integrate into modal
 - `src/store/gameStore.ts` - Add settings persistence
 - `src/types/maze.ts` - Extend for settings data
 
 ### New Components Needed
 
-- `src/components/SettingsModal.tsx` - Main settings modal
-- `src/components/SettingsTabs.tsx` - Tab navigation
+- `src/components/SettingsModal.tsx` - Basic settings modal
 - `src/components/PlayerManagement.tsx` - Player management UI
 - `src/components/SettingsPersistence.ts` - Settings storage
 
-### Modal Structure
+### Modal Structure (Simplified)
 
 ```
 Settings Modal
-├── Players Tab
+├── Player Management
 │   ├── Player List
 │   ├── Add Player Button
 │   ├── Edit Player Forms
 │   └── Remove Player Buttons
-├── Themes Tab
-│   └── (Future theme options)
-└── Accessibility Tab
-    ├── High Contrast Toggle
-    ├── Soft Colors Toggle
-    └── Reduced Motion Toggle
+└── Close Button
 ```
 
 ### Testing Checklist
 
 - [ ] Modal opens/closes properly
-- [ ] Tab navigation works correctly
 - [ ] Player management functions work
 - [ ] Settings persist across sessions
-- [ ] Accessibility controls function properly
 - [ ] Responsive design maintained
 - [ ] Error handling works
 - [ ] Data validation prevents issues
+- [ ] Maximum 4 players enforced
+- [ ] Minimum 1 player enforced
 
 ---
 
 ## 🚨 Risk Considerations
 
-- **Medium Risk**: Complex modal component with multiple features
+- **Low-Medium Risk**: Simplified modal component (reduced from High)
 - **Data Migration**: Handling existing settings data
-- **UI Complexity**: Tabbed interface implementation
-- **Persistence**: Ensuring settings don't get corrupted
+- **Validation**: Ensuring proper player count limits
 
 ---
 
@@ -141,4 +119,11 @@ Settings Modal
 - [ ] Code reviewed
 - [ ] Settings persistence tested
 - [ ] Data migration tested
-- [ ] Cross-browser compatibility verified
+
+---
+
+## 🔄 Future Enhancements (Separate Stories)
+
+- **Epic1-8**: Add tabbed interface with Themes tab
+- **Epic1-9**: Integrate accessibility controls into modal
+- **Epic1-10**: Advanced settings and preferences

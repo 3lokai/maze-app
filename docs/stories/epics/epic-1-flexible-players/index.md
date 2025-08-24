@@ -10,84 +10,116 @@
 - Increases engagement through personalization
 - Provides clear progress tracking for parents
 
+**QA Status**: ✅ **PASS with Concerns** - Stories updated based on QA feedback
+
 ---
 
 ## 🎯 Story Breakdown
 
 ### Phase 1: Foundation
-1. **[Story Epic1-1 — Single Player Default (S)](story-epic1-1-single-player-default-s.md)**
+1. **[Story Epic1-1 — Single Player Default (S)](01-single-player-default.md)**
    - **Priority**: High - Foundation for all other stories
    - **Dependencies**: None
    - **Status**: Ready for implementation
+   - **QA Updates**: Added turn management edge cases for single player
 
-2. **[Story Epic1-2 — Add More Players (M)](story-epic1-2-add-more-players-m.md)**
+2. **[Story Epic1-2 — Add More Players (M)](02-add-more-players.md)**
    - **Priority**: High - Core multi-player functionality
    - **Dependencies**: Story Epic1-1
    - **Status**: Ready for implementation
+   - **QA Updates**: Added critical type system extension (PlayerId: 1|2 → 1|2|3|4)
 
 ### Phase 2: Personalization
-3. **[Story Epic1-3 — Player Names & Emojis (M)](story-epic1-3-player-names-emojis-m.md)**
+3. **[Story Epic1-3 — Player Names & Emojis (M)](03-player-names-emojis.md)**
    - **Priority**: Medium - Personalization features
    - **Dependencies**: Story Epic1-2
    - **Status**: Ready for implementation
+   - **QA Updates**: Added data migration strategy for existing players
 
-4. **[Story Epic1-4 — Record Panel UI (S)](story-epic1-4-record-panel-ui-s.md)**
+4. **[Story Epic1-4 — Record Panel UI (S)](04-record-panel-ui.md)**
    - **Priority**: Medium - Enhanced UX
    - **Dependencies**: Story Epic1-3
    - **Status**: Ready for implementation
 
 ### Phase 3: Polish & Management
-5. **[Story Epic1-5 — Queue Tokens Polish (S)](story-epic1-5-queue-tokens-polish-s.md)**
+5. **[Story Epic1-5 — Queue Tokens Polish (S)](05-queue-tokens-polish.md)**
    - **Priority**: Low - Visual polish
    - **Dependencies**: Story Epic1-3
    - **Status**: Ready for implementation
 
-6. **[Story Epic1-6 — Progress Bar Upgrade (XS)](story-epic1-6-progress-bar-upgrade-xs.md)**
+6. **[Story Epic1-6 — Progress Bar Upgrade (XS)](06-progress-bar-upgrade.md)**
    - **Priority**: Low - Visual enhancement
    - **Dependencies**: Story Epic1-5
    - **Status**: Ready for implementation
 
-7. **[Story Epic1-7 — Parent Settings Modal (M)](story-epic1-7-parent-settings-modal-m.md)**
-   - **Priority**: Medium - Management interface
+7. **[Story Epic1-7 — Basic Settings Modal (S)](07-parent-settings-modal.md)**
+   - **Priority**: Medium - Management interface foundation
    - **Dependencies**: Stories Epic1-3, Epic1-4
    - **Status**: Ready for implementation
+   - **QA Updates**: Reduced from Medium to Small, simplified scope
+
+8. **[Story Epic1-8 — Settings Tabs Interface (S)](08-settings-tabs-interface.md)**
+   - **Priority**: Low - UI enhancement
+   - **Dependencies**: Story Epic1-7
+   - **Status**: Ready for implementation
+   - **QA Addition**: New story to break down complex Epic1-7
 
 ---
 
 ## 🚀 Implementation Strategy
 
 ### Phase 1: Foundation (Stories 1-2)
-- **Story Epic1-1**: Single Player Default - Foundation changes
-- **Story Epic1-2**: Add More Players - Core multi-player functionality
+- **Story Epic1-1**: Single Player Default - Foundation changes with turn management fixes
+- **Story Epic1-2**: Add More Players - Core multi-player functionality with type system updates
 
 ### Phase 2: Personalization (Stories 3-4)
-- **Story Epic1-3**: Player Names & Emojis - Personalization features
+- **Story Epic1-3**: Player Names & Emojis - Personalization features with data migration
 - **Story Epic1-4**: Record Panel UI - Enhanced stats display
 
-### Phase 3: Polish & Management (Stories 5-7)
+### Phase 3: Polish & Management (Stories 5-8)
 - **Story Epic1-5**: Queue Tokens Polish - Visual enhancements
 - **Story Epic1-6**: Progress Bar Upgrade - Progress tracking
-- **Story Epic1-7**: Parent Settings Modal - Management interface
+- **Story Epic1-7**: Basic Settings Modal - Simplified management interface
+- **Story Epic1-8**: Settings Tabs Interface - UI enhancement
 
 ---
 
 ## 📊 Story Statistics
 
-- **Total Stories**: 7
-- **Total Story Points**: 15 (2S + 3M + 1XS + 1S)
+- **Total Stories**: 8 (increased from 7 based on QA recommendations)
+- **Total Story Points**: 16 (3S + 3M + 1XS + 1S)
 - **Foundation Stories**: 2 (High Priority)
 - **Personalization Stories**: 2 (Medium Priority)
-- **Polish Stories**: 3 (Low Priority)
+- **Polish Stories**: 4 (Low Priority)
 
 ### Size Breakdown
-- **Small (S)**: 3 stories
+- **Small (S)**: 4 stories (increased due to Epic1-7 breakdown)
 - **Medium (M)**: 3 stories
 - **Extra Small (XS)**: 1 story
 
 ### Priority Breakdown
 - **High Priority**: 2 stories (Foundation)
 - **Medium Priority**: 3 stories (Personalization + Management)
-- **Low Priority**: 2 stories (Polish)
+- **Low Priority**: 3 stories (Polish + UI Enhancement)
+
+---
+
+## 🔧 QA-Driven Changes
+
+### Risk Mitigation
+- **Epic1-7**: Broken down from Medium to Small to reduce complexity
+- **Epic1-2**: Added critical type system extension requirements
+- **Epic1-1**: Added single player turn management edge cases
+- **Epic1-3**: Added comprehensive data migration strategy
+
+### New Stories Created
+- **Epic1-8**: Settings Tabs Interface - Separated from Epic1-7 for better manageability
+
+### Technical Debt Addressed
+- Type system extension for flexible player support
+- Data migration strategy for existing players
+- Turn management edge cases for single player
+- Simplified settings modal architecture
 
 ---
 
@@ -99,56 +131,9 @@
 - **Family Play**: Support 3+ players in 90% of family sessions
 
 ### Technical Quality
-- **Performance**: No degradation with 4 players
-- **Accessibility**: Maintain WCAG AA compliance
-- **Data Integrity**: 100% player data persistence
-
-### Business Impact
-- **Adoption**: 50% increase in single-player sessions
-- **Retention**: 30% increase in repeat family play
-- **Satisfaction**: 4.5+ star rating for personalization features
-
----
-
-## 🔧 Technical Considerations
-
-### State Management
-- Extend Zustand store for variable player count
-- Implement player array with name/emoji properties
-- Add settings persistence layer
-
-### UI Components
-- Create reusable emoji picker
-- Build flexible record panel
-- Implement tabbed settings modal
-
-### Data Persistence
-- Store player configurations in localStorage
-- Maintain backward compatibility with v0
-- Implement migration strategy
-
-### Performance
-- Optimize rendering for 4 players
-- Lazy load emoji assets
-- Efficient state updates
-
----
-
-## 🚨 Risk Mitigation
-
-### High Risk
-- **Player State Complexity**: Start with 2-player expansion, then scale
-- **UI Layout Changes**: Prototype record panel redesign early
-- **Data Migration**: Test v0 → Epic 1 migration thoroughly
-
-### Medium Risk
-- **Emoji Compatibility**: Fallback to text tokens if needed
-- **Settings Modal Complexity**: Build incrementally with core features first
-- **Performance with 4 Players**: Monitor and optimize as needed
-
-### Low Risk
-- **Animation Performance**: Use CSS transforms for smooth animations
-- **Local Storage Limits**: Implement data cleanup for old configurations
+- **Type Safety**: 100% type coverage for 1-4 player scenarios
+- **Data Migration**: 100% success rate for existing player data
+- **Backward Compatibility**: Maintain existing functionality
 
 ---
 
