@@ -41,15 +41,15 @@ export function GameRail({
   const overallStats = getOverallStats();
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Command Builder & Executor */}
-      <Card className="rail-section-commands" role="region" aria-labelledby="commands-section-title">
-        <CardHeader className="pb-3">
-          <CardTitle id="commands-section-title" className="text-lg flex items-center gap-2">
+      <Card className="rail-section-commands shadow-lg border-2" role="region" aria-labelledby="commands-section-title">
+        <CardHeader className="pb-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+          <CardTitle id="commands-section-title" className="text-lg flex items-center gap-2 text-blue-900">
             <span className="rail-title-commands" aria-hidden="true">⚡ Commands & Execute</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-4">
           <CommandBuilder 
             queue={commandQueue}
             onAddCommand={onAddCommand}
@@ -66,18 +66,18 @@ export function GameRail({
       </Card>
 
       {/* Game Status & Record Panel */}
-      <Card className="rail-section-status" role="region" aria-labelledby="status-section-title">
-        <CardHeader className="pb-2">
-          <CardTitle id="status-section-title" className="text-lg flex items-center gap-2">
+      <Card className="rail-section-status shadow-lg border-2" role="region" aria-labelledby="status-section-title">
+        <CardHeader className="pb-2 bg-gradient-to-r from-green-50 to-emerald-50 border-b">
+          <CardTitle id="status-section-title" className="text-lg flex items-center gap-2 text-green-900">
             <span aria-hidden="true">📊 Record</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-4">
           <div className="space-y-3">
             {activePlayers.length > 0 ? (
               <>
                 {/* Player Stats Rows */}
-                <div className="space-y-2">
+                <div className="space-y-2 sm:space-y-3">
                   {activePlayers.map((playerId) => {
                     const config = playerConfigs[playerId];
                     const isCurrentPlayer = playerId === currentPlayer;
@@ -86,7 +86,7 @@ export function GameRail({
                     return (
                       <div 
                         key={playerId} 
-                        className={`flex items-center justify-between p-3 rounded-lg border ${
+                        className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg border gap-2 sm:gap-0 ${
                           isCurrentPlayer ? 'bg-primary/10 border-primary/20' : 'bg-muted/50'
                         }`}
                       >
@@ -106,7 +106,7 @@ export function GameRail({
                         </div>
                         
                         {/* Stats Display */}
-                        <div className="flex items-center gap-3 text-sm">
+                        <div className="flex items-center justify-center sm:justify-end gap-3 text-sm">
                           {/* Wins */}
                           <div className="flex items-center gap-1">
                             <span className="text-green-600" aria-hidden="true">🏆</span>
@@ -132,12 +132,12 @@ export function GameRail({
                 
                 {/* Overall Totals Row */}
                 <div className="border-t pt-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-muted/30 border gap-2 sm:gap-0">
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-semibold text-muted-foreground">Overall</span>
                     </div>
                     
-                    <div className="flex items-center gap-3 text-sm">
+                    <div className="flex items-center justify-center sm:justify-end gap-3 text-sm">
                       {/* Total Wins */}
                       <div className="flex items-center gap-1">
                         <span className="text-green-600" aria-hidden="true">🏆</span>

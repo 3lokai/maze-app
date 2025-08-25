@@ -48,14 +48,73 @@
    CSS Custom Properties
    ======================= */
 
-/* Cell dimensions for responsive design */
+/* Cell dimensions for desktop-optimized design */
 :root {
-  --cell-min-size: 20px;
-  --cell-max-size: 60px;
-  --cell-size-mobile: 24px;
-  --cell-size-tablet: 32px;
-  --cell-size-desktop: 40px;
-  --cell-size-large: 48px;
+  --cell-min-size: 32px;
+  --cell-max-size: 80px;
+  --cell-size-tablet: 40px;
+  --cell-size-desktop: 48px;
+  --cell-size-large: 56px;
+  --cell-size-xl: 64px;
+}
+
+/* =======================
+   Desktop-First Design Rules
+   ======================= */
+
+/* Desktop-optimized design (768px and up) */
+@media (min-width: 768px) {
+  /* Optimize for desktop interaction */
+  button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* Optimize spacing for desktop */
+  .space-y-4 > * + * {
+    margin-top: 1.5rem;
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 2rem;
+  }
+  
+  /* Enhanced hover effects for desktop */
+button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Active state for better feedback */
+button:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+  
+  /* Improved text sizing for desktop */
+  .text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+}
+
+/* Large desktop optimizations */
+@media (min-width: 1024px) {
+  /* Enhanced spacing for large screens */
+  .space-y-4 > * + * {
+    margin-top: 2rem;
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 2.5rem;
+  }
 }
 
 /* =======================
@@ -319,6 +378,9 @@
   display: grid;
   gap: 0;
   transition: aspect-ratio 0.3s ease-out;
+  /* Support for viewport panning */
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
 .maze-grid-optimized {
@@ -327,13 +389,24 @@
 }
 
 .maze-viewport {
-  overflow: auto;
+  overflow: hidden; /* Disable scrollbars for programmatic panning */
   scroll-behavior: smooth;
+  position: relative;
+  /* Disable touch-drag as specified in requirements */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .maze-viewport-large {
-  max-height: 70vh;
   max-width: 100%;
+  /* Allow full height for large grids - camera will handle panning */
+  height: auto;
+  /* Ensure smooth panning performance */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Cell System */
@@ -358,15 +431,8 @@
   transform: translateZ(0);
 }
 
-/* Responsive Cell Sizing */
-@media (max-width: 640px) {
-  .cell {
-    min-width: var(--cell-size-mobile);
-    min-height: var(--cell-size-mobile);
-  }
-}
-
-@media (min-width: 641px) and (max-width: 1024px) {
+/* Desktop-Optimized Cell Sizing */
+@media (min-width: 768px) and (max-width: 1024px) {
   .cell {
     min-width: var(--cell-size-tablet);
     min-height: var(--cell-size-tablet);
@@ -387,25 +453,18 @@
   }
 }
 
-/* Large Grid Optimizations */
-@media (max-width: 768px) {
+/* Large Grid Optimizations for Desktop */
+@media (min-width: 768px) and (max-width: 1024px) {
   .maze-grid-large .cell {
-    min-width: 24px;
-    min-height: 24px;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .maze-grid-large .cell {
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 36px;
+    min-height: 36px;
   }
 }
 
 @media (min-width: 1025px) {
   .maze-grid-large .cell {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 
@@ -536,10 +595,17 @@
   color: var(--maze-goal-badge-text);
 }
 
-/* Hide legend on larger screens */
-@media (min-width: 391px) {
+/* Show legend on desktop for better UX */
+@media (min-width: 768px) {
   .maze-legend {
-    display: none;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: var(--muted);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
   }
 }
 
@@ -601,12 +667,28 @@
   @apply bg-secondary/30;
 }
 
+.trail-p3 {
+  @apply bg-green-500/30;
+}
+
+.trail-p4 {
+  @apply bg-purple-500/30;
+}
+
 .maze-grid-large .trail-p1 {
   @apply bg-primary/20;
 }
 
 .maze-grid-large .trail-p2 {
   @apply bg-secondary/20;
+}
+
+.maze-grid-large .trail-p3 {
+  @apply bg-green-500/20;
+}
+
+.maze-grid-large .trail-p4 {
+  @apply bg-purple-500/20;
 }
 
 .trail-optimized {

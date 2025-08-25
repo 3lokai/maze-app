@@ -4,11 +4,11 @@ import { loadMazeLayout } from '@/lib/maze';
 
 // Available map layouts
 export const AVAILABLE_MAPS = [
-  { id: 'forest-01.json', name: 'Forest Path', difficulty: 'Easy' },
-  { id: 'garden-01.json', name: 'Garden Maze', difficulty: 'Easy' },
-  { id: 'castle-01.json', name: 'Castle Courtyard', difficulty: 'Medium' },
-  { id: 'city-01.json', name: 'City Streets', difficulty: 'Medium' },
-  { id: 'mountain-01.json', name: 'Mountain Trail', difficulty: 'Hard' },
+  { id: 'forest-01.json', name: 'Forest Path', difficulty: 'Easy', description: 'A gentle forest trail perfect for beginners' },
+  { id: 'garden-01.json', name: 'Garden Maze', difficulty: 'Easy', description: 'Navigate through beautiful garden paths' },
+  { id: 'castle-01.json', name: 'Castle Courtyard', difficulty: 'Medium', description: 'Navigate through the castle corridors to reach the treasure room' },
+  { id: 'city-01.json', name: 'City Streets', difficulty: 'Medium', description: 'Find your way through the busy city streets' },
+  { id: 'mountain-01.json', name: 'Mountain Trail', difficulty: 'Hard', description: 'Challenge yourself on this treacherous mountain path' },
 ] as const;
 
 export type MapId = typeof AVAILABLE_MAPS[number]['id'];

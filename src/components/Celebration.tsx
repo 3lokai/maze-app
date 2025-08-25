@@ -1,19 +1,54 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Confetti, type ConfettiRef } from '@/components/magicui/confetti';
 import type { PlayerId } from '@/types/maze-app';
+import { performanceUtils } from '@/lib/maze';
 
 interface CelebrationProps {
   show: boolean;
   winner: PlayerId | null;
   onComplete?: () => void;
+  mazeSize?: { width: number; height: number };
 }
 
-export function Celebration({ show, winner, onComplete }: CelebrationProps) {
+export function Celebration({ show, winner, onComplete, mazeSize }: CelebrationProps) {
   const confettiRef = useRef<ConfettiRef>(null);
   const firingCountRef = useRef(0);
   const maxFirings = 10;
+  const performanceMode = mazeSize ? performanceUtils.getPerformanceMode(mazeSize.width, mazeSize.height) : 'standard';
+
+  // Performance-optimized confetti configuration
+  const getConfettiConfig = useCallback(() => {
+    const baseConfig = {
+      spread: 70,
+      origin: { y: 0.6 },
+    };
+
+    // Reduce particle count and firing frequency for large grids
+    if (performanceMode === 'optimized') {
+      return {
+        ...baseConfig,
+        particleCount: 50, // Reduced from 100
+        maxFirings: 5, // Reduced from 10
+        firingInterval: 800, // Increased from 500ms
+      };
+    }
+
+    return {
+      ...baseConfig,
+      particleCount: 100,
+      maxFirings: 10,
+      firingInterval: 500,
+    };
+  }, [performanceMode]);
+
+  // Performance monitoring for confetti rendering
+  const recordConfettiTime = useCallback((renderTime: number) => {
+    if (typeof window !== 'undefined' && (window as { performanceMonitor?: { recordConfettiTime: (time: number) => void } }).performanceMonitor) {
+      (window as { performanceMonitor?: { recordConfettiTime: (time: number) => void } }).performanceMonitor?.recordConfettiTime(renderTime);
+    }
+  }, []);
 
   useEffect(() => {
     if (show && winner && confettiRef.current) {
@@ -27,20 +62,29 @@ export function Celebration({ show, winner, onComplete }: CelebrationProps) {
       const p2Primary = rootStyles.getPropertyValue('--celebration-p2-primary').trim();
       const p2Secondary = rootStyles.getPropertyValue('--celebration-p2-secondary').trim();
       
-      // Function to fire confetti with limit
+      const config = getConfettiConfig();
+      
+      // Function to fire confetti with performance monitoring
       const fireConfetti = () => {
-        if (firingCountRef.current < maxFirings && confettiRef.current) {
+        if (firingCountRef.current < config.maxFirings && confettiRef.current) {
+          const startTime = performance.now();
+          
           confettiRef.current.fire({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
+            particleCount: config.particleCount,
+            spread: config.spread,
+            origin: config.origin,
             colors: winner === 1 ? [p1Primary, p1Secondary] : [p2Primary, p2Secondary],
           });
+          
+          // Record confetti rendering time
+          const renderTime = performance.now() - startTime;
+          recordConfettiTime(renderTime);
+          
           firingCountRef.current++;
           
           // Schedule next firing if under limit
-          if (firingCountRef.current < maxFirings) {
-            setTimeout(fireConfetti, 500); // Fire every 500ms
+          if (firingCountRef.current < config.maxFirings) {
+            setTimeout(fireConfetti, config.firingInterval);
           }
         }
       };
@@ -55,7 +99,7 @@ export function Celebration({ show, winner, onComplete }: CelebrationProps) {
 
       return () => clearTimeout(timer);
     }
-  }, [show, winner, onComplete]);
+  }, [show, winner, onComplete, getConfettiConfig, recordConfettiTime]);
 
   if (!show) return null;
 

@@ -4,7 +4,9 @@ import { PlayerToken } from "./PlayerToken";
 import { CollisionFeedback } from "./CollisionFeedback";
 import { MazeLegend } from "./MazeLegend";
 import { useGameStore } from "@/store/gameStore";
-import { memo, useMemo } from "react";
+import { useCamera } from "@/hooks/useCamera";
+import { useViewportContainer } from "@/hooks/useViewport";
+import { memo, useMemo, useEffect, useRef, useCallback, useState } from "react";
 
 interface MazeRendererProps {
   className?: string;
@@ -21,6 +23,48 @@ interface MazeRendererProps {
   previewPath?: boolean;
 }
 
+// Viewport culling utilities for large grids
+const viewportCulling = {
+  /**
+   * Calculate visible cells based on viewport and camera position
+   */
+  getVisibleCells: (
+    maze: MazeData,
+    viewportTransform: { x: number; y: number; scale: number },
+    containerSize: { width: number; height: number },
+    cellSize: number
+  ): { startRow: number; endRow: number; startCol: number; endCol: number } => {
+    // Calculate viewport bounds in grid coordinates
+    const viewportLeft = -viewportTransform.x / viewportTransform.scale;
+    const viewportTop = -viewportTransform.y / viewportTransform.scale;
+    const viewportRight = viewportLeft + containerSize.width / viewportTransform.scale;
+    const viewportBottom = viewportTop + containerSize.height / viewportTransform.scale;
+
+    // Convert to grid coordinates with padding
+    const padding = 2; // Render 2 extra cells on each side for smooth scrolling
+    const startCol = Math.max(0, Math.floor(viewportLeft / cellSize) - padding);
+    const endCol = Math.min(maze.width - 1, Math.ceil(viewportRight / cellSize) + padding);
+    const startRow = Math.max(0, Math.floor(viewportTop / cellSize) - padding);
+    const endRow = Math.min(maze.height - 1, Math.ceil(viewportBottom / cellSize) + padding);
+
+    return { startRow, endRow, startCol, endCol };
+  },
+
+  /**
+   * Check if a cell is visible in the viewport
+   */
+  isCellVisible: (
+    row: number,
+    col: number,
+    visibleBounds: { startRow: number; endRow: number; startCol: number; endCol: number }
+  ): boolean => {
+    return row >= visibleBounds.startRow && 
+           row <= visibleBounds.endRow && 
+           col >= visibleBounds.startCol && 
+           col <= visibleBounds.endCol;
+  },
+};
+
 // Memoized cell component for performance optimization
 const MemoizedCell = memo(({ 
   row, 
@@ -33,7 +77,8 @@ const MemoizedCell = memo(({
   isColliding, 
   theme, 
   previewPath,
-  activePlayers 
+  activePlayers,
+  onTrailRenderTime
 }: {
   row: number;
   col: number;
@@ -46,11 +91,15 @@ const MemoizedCell = memo(({
   theme?: { start?: string; goal?: string };
   previewPath: boolean;
   activePlayers: PlayerId[];
+  onTrailRenderTime?: (time: number) => void;
 }) => {
   const cell: Cell = { r: row, c: col };
   const cellType = getCellType(maze, cell);
   
   let cellClasses = "cell w-full h-full flex items-center justify-center relative";
+  
+  // Performance monitoring for trail rendering
+  const trailRenderStart = useRef(performance.now());
   
   // Check for player trails first (background) - handle partial records
   const playerTrails = activePlayers.map(playerId => ({
@@ -58,10 +107,28 @@ const MemoizedCell = memo(({
     hasTrail: trails[playerId]?.some(pos => pos.r === row && pos.c === col) || false
   }));
   
-  // Apply trail styling (simplified for multiple players)
+  // Apply trail styling with player-specific colors
   const hasAnyTrail = playerTrails.some(p => p.hasTrail);
   if (hasAnyTrail) {
-    cellClasses += " trail-emerald"; // Use single trail color for simplicity
+    // Use player-specific trail colors
+    const trailColors = {
+      1: "trail-p1",
+      2: "trail-p2", 
+      3: "trail-p3",
+      4: "trail-p4"
+    };
+    
+    // Apply trail color for the first player found in this cell
+    const firstPlayerWithTrail = playerTrails.find(p => p.hasTrail);
+    if (firstPlayerWithTrail) {
+      cellClasses += ` ${trailColors[firstPlayerWithTrail.playerId as keyof typeof trailColors] || 'trail-emerald'}`;
+    }
+    
+    // Record trail rendering time for performance monitoring
+    if (onTrailRenderTime) {
+      const trailRenderTime = performance.now() - trailRenderStart.current;
+      onTrailRenderTime(trailRenderTime);
+    }
   }
   
   // Add preview path visualization if enabled
@@ -225,20 +292,138 @@ export function MazeRenderer({
   theme,
   previewPath = false
 }: MazeRendererProps) {
-  const { getActivePlayers } = useGameStore();
+  const { getActivePlayers, enableFollowCam, disableFollowCam } = useGameStore();
   const activePlayers = getActivePlayers();
-
-  // Performance optimization: check if we need optimized rendering
+  
+  // Camera and viewport management
+  const { startCameraUpdate, stopCameraUpdate, getViewportTransform } = useCamera();
+  const containerRef = useViewportContainer();
+  const positionsRef = useRef(positions);
+  
+  // Performance monitoring
   const performanceMode = useMemo(() => 
     performanceUtils.getPerformanceMode(maze.width, maze.height), 
     [maze.width, maze.height]
   );
 
-  // Memoize grid cells for performance
+  // Check if viewport management is needed
+  const needsViewport = maze.width > 15 || maze.height > 15;
+
+  // Viewport culling state
+  const [visibleBounds, setVisibleBounds] = useState(() => ({
+    startRow: 0,
+    endRow: maze.height - 1,
+    startCol: 0,
+    endCol: maze.width - 1,
+  }));
+
+  // Container size tracking for viewport culling
+  const containerSizeRef = useRef({ width: 0, height: 0 });
+  const cellSizeRef = useRef(0);
+
+  // Update positions ref when positions change
+  useEffect(() => {
+    positionsRef.current = positions;
+  }, [positions]);
+
+  // Enable follow-cam for current player on large grids
+  useEffect(() => {
+    if (needsViewport) {
+      enableFollowCam(currentPlayer);
+    } else {
+      disableFollowCam();
+    }
+  }, [needsViewport, currentPlayer, enableFollowCam, disableFollowCam]);
+
+  // Start camera update when viewport is needed
+  useEffect(() => {
+    if (needsViewport) {
+      // Start the camera update loop
+      startCameraUpdate(maze, positionsRef.current);
+    } else {
+      // Stop camera update when not needed
+      stopCameraUpdate();
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      stopCameraUpdate();
+    };
+  }, [needsViewport, maze, startCameraUpdate, stopCameraUpdate]);
+
+  // Viewport culling update function
+  const updateVisibleBounds = useCallback(() => {
+    if (!needsViewport || !containerRef.current) return;
+
+    const container = containerRef.current;
+    const rect = container.getBoundingClientRect();
+    containerSizeRef.current = { width: rect.width, height: rect.height };
+    
+    // Estimate cell size based on container and grid dimensions
+    const estimatedCellSize = Math.min(rect.width / maze.width, rect.height / maze.height);
+    cellSizeRef.current = estimatedCellSize;
+
+    const viewportTransformString = getViewportTransform();
+    // Parse the transform string to extract x, y values
+    const transformMatch = viewportTransformString.match(/translate3d\(([^,]+),\s*([^,]+),\s*([^)]+)\)/);
+    const viewportTransform = transformMatch ? {
+      x: parseFloat(transformMatch[1]),
+      y: parseFloat(transformMatch[2]),
+      scale: 1 // Default scale for now
+    } : { x: 0, y: 0, scale: 1 };
+    
+    const newBounds = viewportCulling.getVisibleCells(
+      maze,
+      viewportTransform,
+      containerSizeRef.current,
+      cellSizeRef.current
+    );
+
+    setVisibleBounds(newBounds);
+  }, [needsViewport, maze, getViewportTransform, containerRef]);
+
+  // Update visible bounds when viewport changes
+  useEffect(() => {
+    if (!needsViewport) return;
+
+    const handleResize = () => {
+      updateVisibleBounds();
+    };
+
+    // Update bounds immediately
+    updateVisibleBounds();
+
+    // Listen for resize events
+    window.addEventListener('resize', handleResize);
+    
+    // Update bounds periodically for smooth scrolling
+    const interval = setInterval(updateVisibleBounds, 100);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearInterval(interval);
+    };
+  }, [needsViewport, updateVisibleBounds]);
+
+  // Performance monitoring callback
+  const handleTrailRenderTime = useCallback((renderTime: number) => {
+    if (typeof window !== 'undefined' && (window as { performanceMonitor?: { recordTrailRenderTime: (time: number) => void } }).performanceMonitor) {
+      (window as { performanceMonitor?: { recordTrailRenderTime: (time: number) => void } }).performanceMonitor?.recordTrailRenderTime(renderTime);
+    }
+  }, []);
+
+  // Memoize grid cells for performance with viewport culling
   const gridCells = useMemo(() => {
     const cells = [];
-    for (let row = 0; row < maze.height; row++) {
-      for (let col = 0; col < maze.width; col++) {
+    const bounds = needsViewport ? visibleBounds : {
+      startRow: 0,
+      endRow: maze.height - 1,
+      startCol: 0,
+      endCol: maze.width - 1,
+    };
+
+    for (let row = bounds.startRow; row <= bounds.endRow; row++) {
+      for (let col = bounds.startCol; col <= bounds.endCol; col++) {
         cells.push(
           <MemoizedCell
             key={`${row}-${col}`}
@@ -253,12 +438,13 @@ export function MazeRenderer({
             theme={theme}
             previewPath={previewPath}
             activePlayers={activePlayers}
+            onTrailRenderTime={handleTrailRenderTime}
           />
         );
       }
     }
     return cells;
-  }, [maze, positions, trails, currentPlayer, collisionCell, isColliding, theme, previewPath, activePlayers]);
+  }, [maze, positions, trails, currentPlayer, collisionCell, isColliding, theme, previewPath, activePlayers, needsViewport, visibleBounds, handleTrailRenderTime]);
 
   // Calculate aspect ratio based on maze dimensions
   const aspectRatio = useMemo(() => {
@@ -280,21 +466,33 @@ export function MazeRenderer({
   // Add viewport management for large grids
   const containerClasses = useMemo(() => {
     const baseClasses = `w-full ${className}`;
-    const viewportClasses = (maze.width > 15 || maze.height > 15) 
+    const viewportClasses = needsViewport 
       ? "maze-viewport maze-viewport-large" 
       : "";
     return `${baseClasses} ${viewportClasses}`;
-  }, [className, maze.width, maze.height]);
+  }, [className, needsViewport]);
+
+  // Apply viewport transform for smooth panning
+  const viewportStyle = useMemo(() => {
+    const baseStyle = {
+      '--maze-aspect-ratio': aspectRatio,
+      gridTemplateColumns: `repeat(${maze.width}, 1fr)`,
+      gridTemplateRows: `repeat(${maze.height}, 1fr)`
+    } as React.CSSProperties;
+
+    if (needsViewport) {
+      baseStyle.transform = getViewportTransform();
+      baseStyle.transition = 'transform 0.1s ease-out';
+    }
+
+    return baseStyle;
+  }, [aspectRatio, maze.width, maze.height, needsViewport, getViewportTransform]);
 
   return (
-    <div className={containerClasses}>
+    <div ref={containerRef} className={containerClasses}>
       <div 
         className={gridClasses}
-        style={{
-          '--maze-aspect-ratio': aspectRatio,
-          gridTemplateColumns: `repeat(${maze.width}, 1fr)`,
-          gridTemplateRows: `repeat(${maze.height}, 1fr)`
-        } as React.CSSProperties}
+        style={viewportStyle}
         role="grid"
         aria-label={`${maze.width} by ${maze.height} maze grid`}
         aria-rowcount={maze.height}

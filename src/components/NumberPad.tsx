@@ -12,7 +12,7 @@ export function NumberPad({ onNumberClick, selectedNumber, "aria-labelledby": ar
   const numbers: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   return (
-    <div className="grid grid-cols-5 gap-3" role="group" aria-labelledby={ariaLabelledBy}>
+    <div className="grid grid-cols-5 gap-2 sm:gap-3" role="group" aria-labelledby={ariaLabelledBy}>
       {numbers.map((number) => (
         <Button
           key={number}
@@ -20,9 +20,10 @@ export function NumberPad({ onNumberClick, selectedNumber, "aria-labelledby": ar
           size="default"
           onClick={() => onNumberClick(asMagnitude1to10(number))}
           className={cn(
-            "h-12 w-12 p-0 text-lg font-semibold transition-all duration-200",
+            "min-h-[44px] min-w-[44px] h-12 w-12 sm:h-14 sm:w-14 p-0 text-lg sm:text-xl font-semibold transition-all duration-200",
             "hover:scale-105 active:scale-95",
             "focus:ring-2 focus:ring-offset-2",
+            "touch-manipulation", // Optimize for touch
             selectedNumber === asMagnitude1to10(number) && "shadow-lg"
           )}
           aria-label={`Select ${number} steps`}

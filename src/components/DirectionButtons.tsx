@@ -26,9 +26,10 @@ export function DirectionButtons({ onDirectionClick, selectedDirection, "aria-la
           size="default"
           onClick={() => onDirectionClick(dir)}
           className={cn(
-            "h-14 text-base font-medium transition-all duration-200",
+            "min-h-[44px] h-14 sm:h-16 text-base font-medium transition-all duration-200",
             "hover:scale-105 active:scale-95",
             "focus:ring-2 focus:ring-offset-2",
+            "touch-manipulation", // Optimize for touch
             selectedDirection === dir && "shadow-lg"
           )}
           title={label}
@@ -37,7 +38,7 @@ export function DirectionButtons({ onDirectionClick, selectedDirection, "aria-la
         >
           <div className="flex flex-col items-center gap-1">
             {icon}
-            <span className="text-xs">{label}</span>
+            <span className="text-xs sm:text-sm">{label}</span>
           </div>
         </Button>
       ))}

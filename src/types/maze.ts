@@ -17,6 +17,8 @@ export const MazeLayoutSchema = z.object({
   }),
   path: z.array(z.string().regex(/^\d+,\d+$/)),
   name: z.string().optional(),
+  difficulty: z.string().optional(),
+  description: z.string().optional(),
   theme: z.object({
     start: z.string().min(1).max(50).optional(),
     goal: z.string().min(1).max(50).optional()
@@ -88,3 +90,35 @@ export const isValidPlayerId = (id: number): id is PlayerId =>
 
 export const getMaxPlayers = (): number => 4;
 export const getMinPlayers = (): number => 1;
+
+/**
+ * Viewport state for camera management
+ */
+export interface ViewportState {
+  scrollX: number;
+  scrollY: number;
+  width: number;
+  height: number;
+  isFollowing: boolean;
+  targetPlayer?: PlayerId;
+}
+
+/**
+ * Camera configuration for follow-cam behavior
+ */
+export interface CameraConfig {
+  followSpeed: number; // 0-1, where 1 is instant
+  easing: 'linear' | 'ease-out' | 'ease-in-out';
+  boundaryPadding: number; // pixels from edge before camera moves
+  maxPanSpeed: number; // pixels per frame
+}
+
+/**
+ * Default camera configuration
+ */
+export const DEFAULT_CAMERA_CONFIG: CameraConfig = {
+  followSpeed: 0.1,
+  easing: 'ease-out',
+  boundaryPadding: 100,
+  maxPanSpeed: 8
+};
