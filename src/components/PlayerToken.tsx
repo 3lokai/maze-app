@@ -1,5 +1,6 @@
 import type { PlayerId } from '@/types/maze-app';
 import { cn } from "@/lib/utils";
+import { useGameStore } from "@/store/gameStore";
 
 interface PlayerTokenProps {
   player: PlayerId;
@@ -8,20 +9,12 @@ interface PlayerTokenProps {
 }
 
 export function PlayerToken({ player, isCurrentPlayer = false, className = "" }: PlayerTokenProps) {
-  const playerData = {
-    1: {
-      color: "token-emerald",
-      emoji: "🐢",
-      label: "P1"
-    },
-    2: {
-      color: "token-indigo",
-      emoji: "🦊", 
-      label: "P2"
-    },
-  };
-
-  const currentPlayerData = playerData[player];
+  const { playerConfigs } = useGameStore();
+  const config = playerConfigs[player];
+  
+  // Fallback emoji if config is not available
+  const emoji = config?.emoji || '🐢';
+  const playerName = config?.name || `Player ${player}`;
 
   return (
     <div
@@ -31,9 +24,9 @@ export function PlayerToken({ player, isCurrentPlayer = false, className = "" }:
         isCurrentPlayer && "scale-110",
         className
       )}
-      title={`Player ${player}${isCurrentPlayer ? ' (Current)' : ''}`}
+      title={`${playerName}${isCurrentPlayer ? ' (Current)' : ''}`}
     >
-      <span>{currentPlayerData.emoji}</span>
+      <span>{emoji}</span>
     </div>
   );
 }

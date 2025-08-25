@@ -11,9 +11,9 @@ import { PlayerId, Cell } from "@/types/maze-app";
 import { BarChart3 } from "lucide-react";
 
 interface StatsDrawerWrapperProps {
-  wins: Record<PlayerId, number>;
-  crashes: Record<PlayerId, number>;
-  trails: Record<PlayerId, Cell[]>;
+  wins: Partial<Record<PlayerId, number>>;
+  crashes: Partial<Record<PlayerId, number>>;
+  trails: Partial<Record<PlayerId, Cell[]>>;
   currentPlayer: PlayerId;
 }
 

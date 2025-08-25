@@ -13,10 +13,7 @@ export function useCelebration(maze?: MazeData) {
     setShowCelebration,
   } = useGameStore();
 
-  const hasTriggeredCelebration = useRef<Record<PlayerId, boolean>>({
-    1: false,
-    2: false,
-  });
+  const hasTriggeredCelebration = useRef<Partial<Record<PlayerId, boolean>>>({});
 
   // Check for goal achievement
   useEffect(() => {
@@ -45,7 +42,7 @@ export function useCelebration(maze?: MazeData) {
   // Reset celebration flags when game resets
   useEffect(() => {
     if (!showCelebration && !winner) {
-      hasTriggeredCelebration.current = { 1: false, 2: false };
+      hasTriggeredCelebration.current = {};
     }
   }, [showCelebration, winner]);
 

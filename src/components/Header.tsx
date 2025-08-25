@@ -1,12 +1,14 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { SettingsDropdown } from "./SettingsDropdown";
+import { SettingsModal } from "./SettingsModal";
 import { StatsDrawerWrapper } from "./StatsDrawerWrapper";
-import { Play } from "lucide-react";
+import { Play, Settings } from "lucide-react";
 import { useGameStore } from "@/store/gameStore";
 import { useMazeLayout } from '@/hooks/useMazeLayout';
 import { MAZE_DATA } from '@/lib/maze';
 
 export function Header() {
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const { playAgain, wins, crashes, trails, currentPlayer } = useGameStore();
   const { mazeData } = useMazeLayout();
 
@@ -36,8 +38,16 @@ export function Header() {
             Play Again
           </Button>
 
-          {/* Settings Dropdown */}
-          <SettingsDropdown />
+          {/* Settings Button */}
+          <Button 
+            variant="outline" 
+            size="lg"
+            className="min-h-[44px] min-w-[44px]"
+            aria-label="Open settings"
+            onClick={() => setShowSettingsModal(true)}
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
 
           {/* Stats Drawer */}
           <StatsDrawerWrapper 
@@ -48,6 +58,12 @@ export function Header() {
           />
         </div>
       </div>
+
+      {/* Settings Modal */}
+      <SettingsModal 
+        open={showSettingsModal} 
+        onOpenChange={setShowSettingsModal} 
+      />
     </header>
   );
 }

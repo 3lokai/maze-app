@@ -18,6 +18,24 @@ type MazeData = {
   graph: Record<string, Set<string>>; // adjacency, no walls
   mazeId?: string;
   seed?: number;
+  labels?: { start?: string; goal?: string; startIcon?: string; goalIcon?: string };
+};
+
+// NEW: Viewport state for larger maps
+type ViewportState = {
+  scrollX: number; scrollY: number;   // px
+  cellSize: number;                    // px, computed responsive
+  followMode: 'center' | 'lead-⅓' | 'none';
+};
+
+// NEW: Map catalog for multiple layouts
+type MazeCatalogItem = { 
+  id: string; 
+  width: number; 
+  height: number; 
+  preview?: string; 
+  difficulty?: string;
+  shortestPathLen?: number;
 };
 ```
 
@@ -35,7 +53,12 @@ Two equivalent inputs are supported; pick one per file:
   "start": { "r": 8, "c": 1 },
   "goal":  { "r": 1, "c": 8 },
   "path": ["8,1","8,2","8,3","7,3","6,3","6,4","6,5","5,5","4,5","4,4","4,3","3,3","2,3","2,4","2,5","2,6","2,7","2,8"],
-  "labels": { "start": "Home", "goal": "Forest" }
+  "labels": { 
+    "start": "Home", 
+    "goal": "Forest",
+    "startIcon": "🏡",
+    "goalIcon": "🌳"
+  }
 }
 ```
 
@@ -53,7 +76,12 @@ Two equivalent inputs are supported; pick one per file:
   "edges": [
     ["8,1","8,2"], ["8,2","8,3"], ["8,3","7,3"], ["7,3","6,3"], ["6,3","6,4"]
   ],
-  "labels": { "start": "Home", "goal": "Forest" }
+  "labels": { 
+    "start": "Home", 
+    "goal": "Forest",
+    "startIcon": "🏡",
+    "goalIcon": "🌳"
+  }
 }
 ```
 
@@ -68,8 +96,8 @@ Two equivalent inputs are supported; pick one per file:
 
 ```ts
 type Layout =
-  | { id:string; width:number; height:number; start:Cell; goal:Cell; path:string[]; labels?:{start?:string;goal?:string} }
-  | { id:string; width:number; height:number; start:Cell; goal:Cell; edges:[string,string][]; labels?:{start?:string;goal?:string} };
+  | { id:string; width:number; height:number; start:Cell; goal:Cell; path:string[]; labels?:{start?:string;goal?:string;startIcon?:string;goalIcon?:string} }
+  | { id:string; width:number; height:number; start:Cell; goal:Cell; edges:[string,string][]; labels?:{start?:string;goal?:string;startIcon?:string;goalIcon?:string} };
 
 function compileLayout(layout: Layout): MazeData {
   const graph: Record<string, Set<string>> = {};
@@ -95,7 +123,8 @@ function compileLayout(layout: Layout): MazeData {
     start: layout.start,
     goal: layout.goal,
     graph,
-    mazeId: layout.id
+    mazeId: layout.id,
+    labels: layout.labels
   };
 }
 ```
@@ -104,7 +133,21 @@ function compileLayout(layout: Layout): MazeData {
 
 * **Renderer**: use `graph` and `mazeHelpers.neighbors(cell)` to draw corridors; non-adjacent edges imply walls.
 * **Executor**: still calls `executeStep` → `isValidMove(maze, from, to)` which uses `graph[from].has(to)`; no change.
-* **Labels**: optional `labels.start/goal` displayed by UI; not part of `MazeData`.
+* **Labels**: optional `labels.start/goal/startIcon/goalIcon` displayed by UI as overlays; not part of `MazeData`.
+
+## Map Catalog & Loading
+
+* **Catalog**: Static JSON list of `MazeCatalogItem`s with metadata.
+* **Loader**: `loadLayout(id) → compileLayout(json) → MazeData` - reuses existing compiler.
+* **Validation**: BFS `start→goal` solvable; record `shortestPathLen` for difficulty badges.
+* **Performance**: Maps up to 20×20 supported with optimized rendering.
+
+## Viewport Management
+
+* **Aspect-Ratio Lock**: Board container uses `aspect-ratio: cols / rows`; cells maintain `aspect-ratio: 1`.
+* **Follow-Cam**: Programmatic pan to keep active player in safe frame (center or lead-third).
+* **Responsive**: Below 768px, right rail stacks below maze; only map viewport scrolls.
+* **Performance**: DOM mode for ≤20×20 maps with `will-change: transform` and translate3d.
 
 ## Validation
 

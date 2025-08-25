@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useGameStore } from "@/store/gameStore";
 
 export function GameAnnouncement() {
-  const { status, showAnnouncement, setShowAnnouncement, currentPlayer } = useGameStore();
+  const { status, showAnnouncement, setShowAnnouncement, currentPlayer, playerConfigs } = useGameStore();
 
   useEffect(() => {
     if (showAnnouncement && status) {
@@ -18,13 +18,26 @@ export function GameAnnouncement() {
   }, [showAnnouncement, status, setShowAnnouncement]);
 
   const getAnnouncementContent = () => {
+    const currentPlayerConfig = playerConfigs[currentPlayer];
+    const playerName = currentPlayerConfig?.name || `Player ${currentPlayer}`;
+    const playerEmoji = currentPlayerConfig?.emoji || '🐢';
+
     switch (status) {
       case 'idle':
-        return { text: `🎮 Ready Player ${currentPlayer}`, variant: 'default' as const };
+        return { 
+          text: `🎮 Ready ${playerEmoji} ${playerName}`, 
+          variant: 'default' as const 
+        };
       case 'executing':
-        return { text: '🔄 Executing Commands...', variant: 'default' as const };
+        return { 
+          text: `🔄 ${playerEmoji} ${playerName} executing commands...`, 
+          variant: 'default' as const 
+        };
       case 'hitWall':
-        return { text: '💥 Collision!', variant: 'destructive' as const };
+        return { 
+          text: `💥 ${playerEmoji} ${playerName} hit a wall!`, 
+          variant: 'destructive' as const 
+        };
       default:
         return null;
     }

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the Git workflow for v1+ development of the Maze App, incorporating CodeRabbit for automated code reviews and quality assurance.
+This document outlines the Git workflow for v1+ development of the Maze App, incorporating CodeRabbit (GitHub App) for automated code reviews and quality assurance.
 
 ## Branching Strategy
 
@@ -17,83 +17,36 @@ This document outlines the Git workflow for v1+ development of the Maze App, inc
 - `bugfix/{description}` - Bug fix branches
 - `hotfix/{description}` - Critical production fixes
 
-## CodeRabbit Setup
+## CodeRabbit Setup (GitHub App)
 
-### 1. Installation & Configuration
+### 1. GitHub App Integration
+
+Since you've already added CodeRabbit to your GitHub account:
+
+1. **CodeRabbit Dashboard**: Go to https://coderabbit.ai
+2. **Repository Connection**: Ensure your maze-app repository is connected
+3. **Configuration**: Set up analysis rules through the web interface
+4. **Webhook**: CodeRabbit will automatically receive PR events
+
+### 2. Local Development Tools
+
+For local quality checks, use these tools:
 
 ```bash
-# Install CodeRabbit CLI
-npm install -g @coderabbit/cli
+# Install development dependencies
+npm install
 
-# Initialize CodeRabbit in your project
-coderabbit init
-```
+# Run linting
+npm run lint
 
-### 2. Configuration Files
+# Run type checking
+npm run type-check
 
-#### `.coderabbit/config.yaml`
-```yaml
-# CodeRabbit configuration
-project:
-  name: "maze-app"
-  description: "Next.js 15 + React 19 maze game with flexible player management"
+# Run tests
+npm run test
 
-# Review settings
-review:
-  auto_approve: false
-  require_approval: true
-  max_reviewers: 2
-  
-# Quality gates
-quality:
-  min_coverage: 80
-  max_complexity: 10
-  require_tests: true
-  
-# Integration
-integrations:
-  github:
-    enabled: true
-    webhook_secret: "${CODERABBIT_WEBHOOK_SECRET}"
-  
-# Custom rules for maze-app
-rules:
-  - name: "TypeScript strict mode"
-    pattern: "*.ts,*.tsx"
-    checks:
-      - "typescript-strict"
-      - "no-any"
-  
-  - name: "React best practices"
-    pattern: "*.tsx"
-    checks:
-      - "react-hooks"
-      - "react-jsx-key"
-      - "react-no-array-index-key"
-  
-  - name: "Component structure"
-    pattern: "src/components/**/*.tsx"
-    checks:
-      - "component-naming"
-      - "props-interface"
-      - "shadcn-patterns"
-```
-
-#### `.coderabbit/ignore`
-```
-# Ignore generated files
-.next/
-node_modules/
-*.tsbuildinfo
-.env.local
-.env.production
-
-# Ignore documentation updates
-docs/qa/completed/
-*.md
-
-# Ignore data files
-public/data/
+# Build project
+npm run build
 ```
 
 ## Git Upload Flow
@@ -140,15 +93,15 @@ npm run type-check
 # Run tests
 npm run test
 
-# Run CodeRabbit local analysis
-coderabbit analyze
+# Build project
+npm run build
 
 # Fix any issues found
 # ... fix issues ...
 
 # Re-commit if needed
 git add .
-git commit -m "fix: resolve linting issues from CodeRabbit analysis"
+git commit -m "fix: resolve linting issues"
 ```
 
 ### 4. Push and Create Pull Request
@@ -185,7 +138,7 @@ Closes #123" \
 
 ### 5. CodeRabbit Review Process
 
-1. **Automatic Analysis**: CodeRabbit automatically analyzes the PR
+1. **Automatic Analysis**: CodeRabbit automatically analyzes the PR via GitHub App
 2. **Quality Report**: Review the CodeRabbit report in the PR
 3. **Address Issues**: Fix any issues identified by CodeRabbit
 4. **Re-analyze**: Push fixes and trigger re-analysis
@@ -237,8 +190,15 @@ test(executor): add unit tests for movement engine
 
 ## Quality Gates
 
+### GitHub Actions Quality Checks
+- **TypeScript Strict Mode**: Enforced through type checking
+- **ESLint**: Code style and best practices
+- **Tests**: All tests must pass
+- **Build**: Successful production build
+- **Bundle Size**: Reasonable bundle size
+
 ### CodeRabbit Quality Checks
-- **Code Coverage**: Minimum 80% coverage
+- **Code Coverage**: Minimum 80% coverage (if configured)
 - **Complexity**: Maximum cyclomatic complexity of 10
 - **Duplication**: Maximum 5% code duplication
 - **Security**: No critical security vulnerabilities
@@ -265,10 +225,16 @@ git checkout -b release/v1.0.0
 ### 2. Final Testing
 ```bash
 # Run full test suite
-npm run test:all
+npm run test
 
-# Run CodeRabbit analysis
-coderabbit analyze --strict
+# Run type checking
+npm run type-check
+
+# Run linting
+npm run lint
+
+# Build project
+npm run build
 
 # Manual testing checklist
 # ... complete testing checklist ...
@@ -293,16 +259,16 @@ npm run deploy:prod
 
 ### Common Issues
 
-#### CodeRabbit Analysis Fails
+#### GitHub Actions Failures
 ```bash
-# Check configuration
-coderabbit config validate
+# Check workflow logs
+# Go to Actions tab in GitHub repository
 
-# Run analysis with verbose output
-coderabbit analyze --verbose
-
-# Check specific rules
-coderabbit analyze --rules typescript-strict
+# Run checks locally
+npm run lint
+npm run type-check
+npm run test
+npm run build
 ```
 
 #### Merge Conflicts
@@ -315,11 +281,11 @@ git commit -m "fix: resolve merge conflicts"
 ```
 
 #### Quality Gate Failures
-1. Review CodeRabbit report
+1. Review GitHub Actions logs
 2. Address critical issues first
-3. Update tests if coverage is low
+3. Update tests if needed
 4. Refactor complex code if needed
-5. Re-run analysis after fixes
+5. Re-run checks after fixes
 
 ## Integration with BMad Method
 
@@ -339,21 +305,12 @@ git commit -m "fix: resolve merge conflicts"
 
 ## Environment Variables
 
-Add to your `.env.local`:
-```bash
-# CodeRabbit Configuration
-CODERABBIT_API_KEY=your_api_key_here
-CODERABBIT_WEBHOOK_SECRET=your_webhook_secret_here
-CODERABBIT_PROJECT_ID=your_project_id_here
-
-# GitHub Integration
-GITHUB_TOKEN=your_github_token_here
-```
+No additional environment variables needed for CodeRabbit GitHub App integration.
 
 ## Next Steps
 
-1. **Setup CodeRabbit**: Install and configure CodeRabbit
-2. **Update CI/CD**: Integrate CodeRabbit into your CI pipeline
-3. **Team Training**: Ensure team understands the workflow
-4. **Monitor**: Track CodeRabbit metrics and quality improvements
+1. **Test the workflow** with a small change
+2. **Configure CodeRabbit rules** in the web dashboard
+3. **Set up branch protection** on `develop` to require checks
+4. **Monitor quality metrics** in your CodeRabbit dashboard
 5. **Iterate**: Refine workflow based on team feedback

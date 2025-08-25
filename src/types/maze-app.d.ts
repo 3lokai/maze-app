@@ -4,7 +4,7 @@
    Shared Types & Utilities
    ========================= */
 
-   export type PlayerId = 1 | 2;
+   export type PlayerId = 1 | 2 | 3 | 4;
    export type Dir = 'U' | 'D' | 'L' | 'R';
    
    export type Cell = Readonly<{ r: number; c: number }>;

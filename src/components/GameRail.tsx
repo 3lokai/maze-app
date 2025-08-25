@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CommandBuilder } from "@/components/CommandBuilder";
 import { CommandToken } from "@/types/commands";
 import { ExecutionState } from "@/types/execution";
-import { PlayerId, Dir } from "@/types/maze-app";
+import { Dir } from "@/types/maze-app";
+import { useGameStore } from "@/store/gameStore";
 
 interface GameRailProps {
-  wins: Record<PlayerId, number>;
   commandQueue: CommandToken[];
   executionState: ExecutionState;
   onAddCommand: (direction: Dir, steps: number) => void;
@@ -14,10 +14,10 @@ interface GameRailProps {
   onRun: () => void;
   onStep: () => void;
   onStop: () => void;
+  onRemoveCommand?: (index: number) => void;
 }
 
 export function GameRail({
-  wins,
   commandQueue,
   executionState,
   onAddCommand,
@@ -26,7 +26,20 @@ export function GameRail({
   onRun,
   onStep,
   onStop,
+  onRemoveCommand,
 }: GameRailProps) {
+  const { 
+    playerConfigs, 
+    getActivePlayers, 
+    currentPlayer, 
+    getPlayerStats, 
+    getOverallStats 
+  } = useGameStore();
+  
+  // Get active players from store
+  const activePlayers = getActivePlayers();
+  const overallStats = getOverallStats();
+  
   return (
     <div className="space-y-4">
       {/* Command Builder & Executor */}
@@ -45,12 +58,14 @@ export function GameRail({
             onRun={onRun}
             onStep={onStep}
             onStop={onStop}
+            onRemoveCommand={onRemoveCommand}
             executionState={executionState}
+            currentPlayer={currentPlayer}
           />
         </CardContent>
       </Card>
 
-      {/* Game Status & Wins */}
+      {/* Game Status & Record Panel */}
       <Card className="rail-section-status" role="region" aria-labelledby="status-section-title">
         <CardHeader className="pb-2">
           <CardTitle id="status-section-title" className="text-lg flex items-center gap-2">
@@ -58,17 +73,97 @@ export function GameRail({
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="text-center">
-            <div className="flex justify-center gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <span aria-hidden="true">🐢</span>
-                <span className="font-medium">{wins[1]}</span>
+          <div className="space-y-3">
+            {activePlayers.length > 0 ? (
+              <>
+                {/* Player Stats Rows */}
+                <div className="space-y-2">
+                  {activePlayers.map((playerId) => {
+                    const config = playerConfigs[playerId];
+                    const isCurrentPlayer = playerId === currentPlayer;
+                    const stats = getPlayerStats(playerId);
+                    
+                    return (
+                      <div 
+                        key={playerId} 
+                        className={`flex items-center justify-between p-3 rounded-lg border ${
+                          isCurrentPlayer ? 'bg-primary/10 border-primary/20' : 'bg-muted/50'
+                        }`}
+                      >
+                        {/* Player Info */}
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="text-xl flex-shrink-0" aria-hidden="true">
+                            {config?.emoji || '🐢'}
+                          </span>
+                          <span className="font-medium text-sm truncate">
+                            {config?.name || `Player ${playerId}`}
+                          </span>
+                          {isCurrentPlayer && (
+                            <span className="text-xs text-primary font-medium flex-shrink-0">
+                              (Current)
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Stats Display */}
+                        <div className="flex items-center gap-3 text-sm">
+                          {/* Wins */}
+                          <div className="flex items-center gap-1">
+                            <span className="text-green-600" aria-hidden="true">🏆</span>
+                            <span className="font-bold text-green-600">{stats.wins}</span>
+                          </div>
+                          
+                          {/* Crashes */}
+                          <div className="flex items-center gap-1">
+                            <span className="text-red-600" aria-hidden="true">💥</span>
+                            <span className="font-bold text-red-600">{stats.crashes}</span>
+                          </div>
+                          
+                          {/* Steps */}
+                          <div className="flex items-center gap-1">
+                            <span className="text-blue-600" aria-hidden="true">👣</span>
+                            <span className="font-bold text-blue-600">{stats.steps}</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                {/* Overall Totals Row */}
+                <div className="border-t pt-3">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-semibold text-muted-foreground">Overall</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 text-sm">
+                      {/* Total Wins */}
+                      <div className="flex items-center gap-1">
+                        <span className="text-green-600" aria-hidden="true">🏆</span>
+                        <span className="font-bold text-green-600">{overallStats.wins}</span>
+                      </div>
+                      
+                      {/* Total Crashes */}
+                      <div className="flex items-center gap-1">
+                        <span className="text-red-600" aria-hidden="true">💥</span>
+                        <span className="font-bold text-red-600">{overallStats.crashes}</span>
+                      </div>
+                      
+                      {/* Total Steps */}
+                      <div className="flex items-center gap-1">
+                        <span className="text-blue-600" aria-hidden="true">👣</span>
+                        <span className="font-bold text-blue-600">{overallStats.steps}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-sm text-muted-foreground text-center py-4">
+                No players yet
               </div>
-              <div className="flex items-center gap-1">
-                <span aria-hidden="true">🦊</span>
-                <span className="font-medium">{wins[2]}</span>
-              </div>
-            </div>
+            )}
           </div>
         </CardContent>
       </Card>
