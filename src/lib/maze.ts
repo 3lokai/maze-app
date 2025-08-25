@@ -3,6 +3,58 @@ import type { MazeLayout, MazeEdgeLayout } from '@/types/maze';
 import { MazeLayoutSchema } from '@/types/maze';
 
 /**
+ * Grid size constraints for performance optimization
+ */
+export const GRID_CONSTRAINTS = {
+  MAX_WIDTH: 20,
+  MAX_HEIGHT: 20,
+  MAX_CELLS: 400, // 20×20
+  PERFORMANCE_THRESHOLD: 15, // Switch to optimized mode for grids > 15×15
+} as const;
+
+/**
+ * Performance monitoring utilities
+ */
+export const performanceUtils = {
+  /**
+   * Check if grid size requires performance optimizations
+   */
+  needsOptimization: (width: number, height: number): boolean => {
+    return width > GRID_CONSTRAINTS.PERFORMANCE_THRESHOLD || 
+           height > GRID_CONSTRAINTS.PERFORMANCE_THRESHOLD;
+  },
+
+  /**
+   * Validate grid size constraints
+   */
+  validateGridSize: (width: number, height: number): { isValid: boolean; reason?: string } => {
+    if (width > GRID_CONSTRAINTS.MAX_WIDTH || height > GRID_CONSTRAINTS.MAX_HEIGHT) {
+      return { 
+        isValid: false, 
+        reason: `Grid size ${width}×${height} exceeds maximum allowed size of ${GRID_CONSTRAINTS.MAX_WIDTH}×${GRID_CONSTRAINTS.MAX_HEIGHT}` 
+      };
+    }
+    
+    const totalCells = width * height;
+    if (totalCells > GRID_CONSTRAINTS.MAX_CELLS) {
+      return { 
+        isValid: false, 
+        reason: `Total cells ${totalCells} exceeds maximum allowed ${GRID_CONSTRAINTS.MAX_CELLS}` 
+      };
+    }
+    
+    return { isValid: true };
+  },
+
+  /**
+   * Get performance mode for grid size
+   */
+  getPerformanceMode: (width: number, height: number): 'standard' | 'optimized' => {
+    return performanceUtils.needsOptimization(width, height) ? 'optimized' : 'standard';
+  }
+};
+
+/**
  * Fixed 10×10 maze data with walls, start, and goal positions
  * Start: (0,0), Goal: (9,9)
  */

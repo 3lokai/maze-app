@@ -46,6 +46,7 @@ interface GameState {
   incrementScore: (player: PlayerId) => void;
   incrementCrash: (player: PlayerId) => void;
   resetGame: (maze?: MazeData) => void;
+  onMapChange: (maze: MazeData) => void;
   
   // Player management actions
   addPlayer: () => void;
@@ -185,6 +186,35 @@ export const useGameStore = create<GameState>((set, get) => ({
       status: 'idle',
       commandQueue: [],
       crashes: newCrashes,
+    });
+  },
+
+  // Map change handler - resets game state when map changes
+  onMapChange: (maze: MazeData) => {
+    const startPosition = maze.start;
+    const state = get();
+    const activePlayers = state.getActivePlayers();
+    
+    const newPositions: Partial<Record<PlayerId, Cell>> = {};
+    const newTrails: Partial<Record<PlayerId, Cell[]>> = {};
+    const newCrashes: Partial<Record<PlayerId, number>> = {};
+    
+    activePlayers.forEach(playerId => {
+      newPositions[playerId] = startPosition;
+      newTrails[playerId] = [startPosition];
+      newCrashes[playerId] = 0;
+    });
+    
+    set({
+      positions: newPositions,
+      trails: newTrails,
+      currentPlayer: activePlayers[0] || 1,
+      status: 'idle',
+      commandQueue: [],
+      crashes: newCrashes,
+      winner: null,
+      showCelebration: false,
+      showAnnouncement: false,
     });
   },
 

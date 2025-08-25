@@ -15,8 +15,9 @@ import { MAZE_DATA } from "@/lib/maze";
 import { Header } from "@/components/Header";
 import { GameRail } from "@/components/GameRail";
 import { useAccessibility } from "@/hooks/useAccessibility";
-import { useMazeLayout } from "@/hooks/useMazeLayout";
+import { useMazeLayout, type MapId } from "@/hooks/useMazeLayout";
 import { GameAnnouncement } from "@/components/GameAnnouncement";
+import { MapSelector } from "@/components/MapSelector";
 import type { GameStatus } from "@/types/maze-app";
 import { cn } from "@/lib/utils";
 
@@ -47,7 +48,14 @@ export default function Home() {
   const { settings } = useAccessibility();
 
   // Load maze layout
-  const { mazeData, isLoading, error } = useMazeLayout();
+  const { 
+    mazeData, 
+    isLoading, 
+    error, 
+    currentMapId, 
+    availableMaps, 
+    switchMap 
+  } = useMazeLayout();
 
   // Show announcement when status changes
   useEffect(() => {
@@ -70,6 +78,16 @@ export default function Home() {
       });
     }
   }, [mazeData, resetGame]);
+
+  // Handle map changes
+  const handleMapChange = async (mapId: string) => {
+    try {
+      await switchMap(mapId as MapId);
+      // The maze data will be updated by the hook, which will trigger the resetGame effect
+    } catch (error) {
+      console.error('Failed to switch map:', error);
+    }
+  };
 
   // Set up celebration logic
   useCelebration(mazeData || MAZE_DATA);
@@ -173,10 +191,13 @@ export default function Home() {
             <div className="w-full max-w-2xl mx-auto">
               <div className="flex items-center justify-between gap-2 mb-4">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" aria-label={`Maze size: ${currentMazeData.width} by ${currentMazeData.height} cells`}>
-                    {currentMazeData.width}×{currentMazeData.height}
-                  </Badge>
                   <span id="maze-section-title" className="text-lg font-semibold">Maze Grid</span>
+                  <MapSelector
+                    currentMapId={currentMapId}
+                    availableMaps={availableMaps as unknown as Array<{readonly id: MapId; readonly name: string; readonly difficulty: string}>}
+                    onMapChange={handleMapChange}
+                    isLoading={isLoading}
+                  />
                 </div>
                 {/* Compact Player Turn Indicator */}
                 <Badge 

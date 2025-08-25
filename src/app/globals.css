@@ -45,35 +45,46 @@
 }
 
 /* =======================
-   Root Variables (Default)
+   CSS Custom Properties
    ======================= */
+
+/* Cell dimensions for responsive design */
 :root {
-  --radius: 0.625rem;   /* off-white, less glare */
+  --cell-min-size: 20px;
+  --cell-max-size: 60px;
+  --cell-size-mobile: 24px;
+  --cell-size-tablet: 32px;
+  --cell-size-desktop: 40px;
+  --cell-size-large: 48px;
+}
+
+/* =======================
+   Theme Variables
+   ======================= */
+
+/* Default Theme */
+:root {
+  --radius: 0.625rem;
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
-
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-
-  --primary: oklch(0.205 0 0); /* emerald, slightly darker/less saturated */
+  --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-
-  --secondary: oklch(0.97 0 0); /* indigo-600 */
+  --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.980 0.000 0);
-
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
 
   /* Chart colors */
   --chart-1: oklch(0.646 0.222 41.116);
@@ -97,53 +108,54 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+
+  /* Maze theme colors */
+  --maze-wall-bg: oklch(0.145 0 0 / 70%);
+  --maze-start-bg: oklch(0.95 0.02 120);
+  --maze-start-border: oklch(0.8 0.1 120);
+  --maze-start-badge-bg: oklch(0.98 0.01 120);
+  --maze-start-badge-text: oklch(0.2 0.1 120);
+  --maze-start-badge-border: oklch(0.8 0.1 120);
+  --maze-goal-bg: oklch(0.95 0.02 240);
+  --maze-goal-border: oklch(0.8 0.1 240);
+  --maze-goal-badge-bg: oklch(0.98 0.01 240);
+  --maze-goal-badge-text: oklch(0.2 0.1 240);
+  --maze-goal-badge-border: oklch(0.8 0.1 240);
+  --maze-path-bg-from: oklch(0.98 0.01 60);
+  --maze-path-bg-to: oklch(0.96 0.02 45);
+  --maze-path-border: oklch(0.9 0.02 60);
 }
 
 /* High Contrast Mode */
 .hc {
   --background: oklch(0.000 0.000 0);
   --foreground: oklch(1.000 0.000 0);
-
   --card: oklch(0.000 0.000 0);
   --card-foreground: oklch(1.000 0.000 0);
-
   --popover: oklch(0.000 0.000 0);
   --popover-foreground: oklch(1.000 0.000 0);
-
-  --primary: oklch(0.600 0.200 120.00000000000001);   /* bright green */
-  --secondary: oklch(0.600 0.200 260.00000000000006); /* bright violet */
+  --primary: oklch(0.600 0.200 120.00000000000001);
+  --secondary: oklch(0.600 0.200 260.00000000000006);
   --primary-foreground: oklch(1.000 0.000 0);
   --secondary-foreground: oklch(1.000 0.000 0);
-
   --muted: oklch(0.150 0.000 0);
   --muted-foreground: oklch(0.800 0.000 0);
-
   --accent: oklch(0.150 0.000 0);
   --accent-foreground: oklch(1.000 0.000 0);
-
   --destructive: oklch(0.600 0.200 25.000000000000004);
   --destructive-foreground: oklch(1.000 0.000 0);
-
   --border: oklch(0.700 0.000 0);
   --input: oklch(0.700 0.000 0);
   --ring: oklch(1.000 0.000 0);
-
-  /* Chart colors for high contrast */
   --chart-1: oklch(1.000 0.000 0);
   --chart-2: oklch(1.000 0.000 0);
   --chart-3: oklch(1.000 0.000 0);
   --chart-4: oklch(1.000 0.000 0);
   --chart-5: oklch(1.000 0.000 0);
-
-  /* Celebration colors for high contrast */
   --celebration-p1-primary: oklch(1.000 0.000 0);
   --celebration-p1-secondary: oklch(0.800 0.000 0);
   --celebration-p2-primary: oklch(1.000 0.000 0);
   --celebration-p2-secondary: oklch(0.800 0.000 0);
-
-  /* Sidebar colors for high contrast */
   --sidebar: oklch(0.000 0.000 0);
   --sidebar-foreground: oklch(1.000 0.000 0);
   --sidebar-primary: oklch(1.000 0.000 0);
@@ -152,51 +164,52 @@
   --sidebar-accent-foreground: oklch(1.000 0.000 0);
   --sidebar-border: oklch(0.700 0.000 0);
   --sidebar-ring: oklch(1.000 0.000 0);
+  --maze-wall-bg: oklch(1.000 0.000 0);
+  --maze-start-bg: oklch(0.000 0.000 0);
+  --maze-start-border: oklch(0.600 0.200 120.00000000000001);
+  --maze-start-badge-bg: oklch(0.000 0.000 0);
+  --maze-start-badge-text: oklch(0.600 0.200 120.00000000000001);
+  --maze-start-badge-border: oklch(0.600 0.200 120.00000000000001);
+  --maze-goal-bg: oklch(0.000 0.000 0);
+  --maze-goal-border: oklch(0.600 0.200 260.00000000000006);
+  --maze-goal-badge-bg: oklch(0.000 0.000 0);
+  --maze-goal-badge-text: oklch(0.600 0.200 260.00000000000006);
+  --maze-goal-badge-border: oklch(0.600 0.200 260.00000000000006);
+  --maze-path-bg-from: oklch(0.000 0.000 0);
+  --maze-path-bg-to: oklch(0.000 0.000 0);
+  --maze-path-border: oklch(0.700 0.000 0);
 }
 
 /* Soft Mode (warm, kid-friendly) */
 .soft {
-  --background: oklch(0.960 0.005 67.79268876545056);  /* #f9f7f4 approx */
+  --background: oklch(0.960 0.005 67.79268876545056);
   --foreground: oklch(0.150 0.010 25.000000000000004);
-
   --card: oklch(0.970 0.005 67.79268876545056);
   --card-foreground: oklch(0.150 0.010 25.000000000000004);
-
   --popover: oklch(0.970 0.005 67.79268876545056);
   --popover-foreground: oklch(0.150 0.010 25.000000000000004);
-
-  --primary: oklch(0.500 0.120 20.000000000000004);   /* warm terracotta accent */
-  --secondary: oklch(0.600 0.080 35.00000000000001); /* muted ochre */
+  --primary: oklch(0.500 0.120 20.000000000000004);
+  --secondary: oklch(0.600 0.080 35.00000000000001);
   --primary-foreground: oklch(1.000 0.000 0);
   --secondary-foreground: oklch(1.000 0.000 0);
-
-  --muted: oklch(0.900 0.015 30.000000000000004);     /* warm grey */
+  --muted: oklch(0.900 0.015 30.000000000000004);
   --muted-foreground: oklch(0.400 0.010 30.000000000000004);
-
   --accent: oklch(0.850 0.015 20.000000000000004);
   --accent-foreground: oklch(0.200 0.015 25.000000000000004);
-
   --destructive: oklch(0.600 0.140 25.000000000000004);
   --destructive-foreground: oklch(1.000 0.000 0);
-
   --border: oklch(0.800 0.015 30.000000000000004);
   --input: oklch(0.800 0.015 30.000000000000004);
   --ring: oklch(0.200 0.015 30.000000000000004);
-
-  /* Chart colors for soft mode */
   --chart-1: oklch(0.500 0.080 20.000000000000004);
   --chart-2: oklch(0.970 0.005 67.79268876545056);
   --chart-3: oklch(0.600 0.070 35.00000000000001);
   --chart-4: oklch(0.970 0.005 67.79268876545056);
   --chart-5: oklch(0.700 0.025 25.000000000000004);
-
-  /* Celebration colors for soft mode */
   --celebration-p1-primary: oklch(0.600 0.140 25.000000000000004);
   --celebration-p1-secondary: oklch(0.520 0.140 25.000000000000004);
   --celebration-p2-primary: oklch(0.600 0.080 35.00000000000001);
   --celebration-p2-secondary: oklch(0.520 0.080 35.00000000000001);
-
-  /* Sidebar colors for soft mode */
   --sidebar: oklch(0.940 0.010 30.000000000000004);
   --sidebar-foreground: oklch(0.150 0.010 25.000000000000004);
   --sidebar-primary: oklch(0.500 0.120 20.000000000000004);
@@ -205,9 +218,23 @@
   --sidebar-accent-foreground: oklch(0.200 0.015 25.000000000000004);
   --sidebar-border: oklch(0.800 0.015 30.000000000000004);
   --sidebar-ring: oklch(0.200 0.015 30.000000000000004);
+  --maze-wall-bg: oklch(0.150 0.010 25.000000000000004 / 70%);
+  --maze-start-bg: oklch(0.950 0.015 20.000000000000004);
+  --maze-start-border: oklch(0.500 0.120 20.000000000000004);
+  --maze-start-badge-bg: oklch(0.980 0.005 20.000000000000004);
+  --maze-start-badge-text: oklch(0.200 0.015 25.000000000000004);
+  --maze-start-badge-border: oklch(0.500 0.120 20.000000000000004);
+  --maze-goal-bg: oklch(0.950 0.010 35.00000000000001);
+  --maze-goal-border: oklch(0.600 0.080 35.00000000000001);
+  --maze-goal-badge-bg: oklch(0.980 0.005 35.00000000000001);
+  --maze-goal-badge-text: oklch(0.200 0.015 25.000000000000004);
+  --maze-goal-badge-border: oklch(0.600 0.080 35.00000000000001);
+  --maze-path-bg-from: oklch(0.970 0.005 67.79268876545056);
+  --maze-path-bg-to: oklch(0.960 0.005 67.79268876545056);
+  --maze-path-border: oklch(0.800 0.015 30.000000000000004);
 }
 
-/* Dark mode (existing) */
+/* Dark Mode */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -244,11 +271,26 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --maze-wall-bg: oklch(0.985 0 0 / 70%);
+  --maze-start-bg: oklch(0.205 0 0);
+  --maze-start-border: oklch(0.922 0 0);
+  --maze-start-badge-bg: oklch(0.205 0 0);
+  --maze-start-badge-text: oklch(0.922 0 0);
+  --maze-start-badge-border: oklch(0.922 0 0);
+  --maze-goal-bg: oklch(0.205 0 0);
+  --maze-goal-border: oklch(0.269 0 0);
+  --maze-goal-badge-bg: oklch(0.205 0 0);
+  --maze-goal-badge-text: oklch(0.269 0 0);
+  --maze-goal-badge-border: oklch(0.269 0 0);
+  --maze-path-bg-from: oklch(0.205 0 0);
+  --maze-path-bg-to: oklch(0.205 0 0);
+  --maze-path-border: oklch(1 0 0 / 10%);
 }
 
 /* =======================
-   Base Resets
+   Base Styles
    ======================= */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -259,86 +301,354 @@
 }
 
 /* =======================
-   Utility Extras
+   Animations
    ======================= */
 
-/* Shake animation for illegal moves */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4px); }
-  40%, 80% { transform: translateX(4px); }
-}
-.shake {
-  animation: shake 0.25s ease-in-out;
-}
-
-/* Square grid cells */
-.cell {
-  @apply flex items-center justify-center border border-border/60;
-}
-
-/* Player tokens */
-.token-p1 {
-  @apply w-6 h-6 rounded-full bg-primary;
-}
-.token-p2 {
-  @apply w-6 h-6 rounded-full bg-secondary;
-}
-
-/* Trail highlight */
-.trail-p1 {
-  @apply bg-primary/30;
-}
-.trail-p2 {
-  @apply bg-secondary/30;
-}
+/* All animations are now consolidated in src/styles/animations.css */
 
 /* =======================
-   Maze Game Specific
+   Maze Game Components
    ======================= */
 
-/* Turn indicator pulse animation */
-@keyframes pulse-turn {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
-}
-.turn-active {
-  animation: pulse-turn 2s ease-in-out infinite;
-}
-
-/* Valid move scale animation */
-@keyframes valid-move {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
-}
-.valid-move {
-  animation: valid-move 0.1s ease-out;
+/* Grid Layout */
+.maze-grid {
+  aspect-ratio: var(--maze-aspect-ratio, 1);
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: grid;
+  gap: 0;
+  transition: aspect-ratio 0.3s ease-out;
 }
 
-/* Trail fade-in animation */
-@keyframes trail-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-.trail-fade {
-  animation: trail-fade 0.12s ease-in;
+.maze-grid-optimized {
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-/* Maze specific elements */
+.maze-viewport {
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.maze-viewport-large {
+  max-height: 70vh;
+  max-width: 100%;
+}
+
+/* Cell System */
+.cell {
+  aspect-ratio: 1;
+  min-width: var(--cell-min-size);
+  min-height: var(--cell-min-size);
+  max-width: var(--cell-max-size);
+  max-height: var(--cell-max-size);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid var(--border);
+  transition: transform 0.1s ease-out, min-width 0.3s ease-out, min-height 0.3s ease-out;
+}
+
+.maze-grid-optimized .cell {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Responsive Cell Sizing */
+@media (max-width: 640px) {
+  .cell {
+    min-width: var(--cell-size-mobile);
+    min-height: var(--cell-size-mobile);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .cell {
+    min-width: var(--cell-size-tablet);
+    min-height: var(--cell-size-tablet);
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .cell {
+    min-width: var(--cell-size-desktop);
+    min-height: var(--cell-size-desktop);
+  }
+}
+
+@media (min-width: 1441px) {
+  .cell {
+    min-width: var(--cell-size-large);
+    min-height: var(--cell-size-large);
+  }
+}
+
+/* Large Grid Optimizations */
+@media (max-width: 768px) {
+  .maze-grid-large .cell {
+    min-width: 24px;
+    min-height: 24px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .maze-grid-large .cell {
+    min-width: 32px;
+    min-height: 32px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .maze-grid-large .cell {
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+/* Cell Content */
+.cell-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.cell-content-interactive {
+  pointer-events: auto;
+}
+
+/* Overlay System */
+.cell-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cell-overlay-start {
+  color: var(--maze-start-badge-text);
+}
+
+.cell-overlay-goal {
+  color: var(--maze-goal-badge-text);
+}
+
+.cell-label {
+  font-size: clamp(0.5rem, 2vw, 0.75rem);
+  line-height: 1;
+  text-align: center;
+  word-break: break-word;
+  max-width: 90%;
+  max-height: 90%;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.cell-label-start {
+  color: var(--maze-start-badge-text);
+}
+
+.cell-label-goal {
+  color: var(--maze-goal-badge-text);
+}
+
+.cell-emoji {
+  font-size: clamp(0.75rem, 3vw, 1rem);
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.cell-emoji-start {
+  color: var(--maze-start-badge-text);
+}
+
+.cell-emoji-goal {
+  color: var(--maze-goal-badge-text);
+}
+
+/* Responsive overlay behavior */
+@media (max-width: 390px) {
+  .cell-label {
+    display: none;
+  }
+  
+  .cell-emoji {
+    font-size: clamp(0.875rem, 4vw, 1.125rem);
+  }
+}
+
+@media (min-width: 391px) {
+  .cell-overlay:hover .cell-emoji {
+    transform: scale(1.1);
+  }
+}
+
+/* Maze Legend */
+.maze-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: var(--muted);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.legend-emoji {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.legend-emoji-start {
+  color: var(--maze-start-badge-text);
+}
+
+.legend-emoji-goal {
+  color: var(--maze-goal-badge-text);
+}
+
+.legend-label {
+  color: var(--foreground);
+}
+
+.legend-label-start {
+  color: var(--maze-start-badge-text);
+}
+
+.legend-label-goal {
+  color: var(--maze-goal-badge-text);
+}
+
+/* Hide legend on larger screens */
+@media (min-width: 391px) {
+  .maze-legend {
+    display: none;
+  }
+}
+
+.cell-player {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Maze Elements */
 .maze-wall {
-  @apply bg-foreground/70;
+  background-color: var(--maze-wall-bg);
 }
 
 .maze-start {
-  @apply border-2 border-primary/50 bg-primary/10;
+  background-color: var(--maze-start-bg);
+  border: 2px solid var(--maze-start-border);
 }
 
 .maze-goal {
-  @apply border-2 border-secondary/50 bg-secondary/10;
+  background-color: var(--maze-goal-bg);
+  border: 2px solid var(--maze-goal-border);
 }
 
-/* Player turn indicators */
+.maze-path {
+  background: linear-gradient(to bottom right, var(--maze-path-bg-from), var(--maze-path-bg-to));
+  border: 1px solid var(--maze-path-border);
+}
+
+
+
+/* Player Tokens */
+.token-p1,
+.token-emerald {
+  @apply w-6 h-6 rounded-full bg-primary;
+}
+
+.token-p2,
+.token-indigo {
+  @apply w-6 h-6 rounded-full bg-secondary;
+}
+
+.maze-grid-large .token-p1,
+.maze-grid-large .token-p2 {
+  @apply w-5 h-5;
+}
+
+/* Trail System */
+.trail-p1,
+.trail-emerald {
+  @apply bg-primary/30;
+}
+
+.trail-p2,
+.trail-indigo {
+  @apply bg-secondary/30;
+}
+
+.maze-grid-large .trail-p1 {
+  @apply bg-primary/20;
+}
+
+.maze-grid-large .trail-p2 {
+  @apply bg-secondary/20;
+}
+
+.trail-optimized {
+  opacity: 0.6;
+  transition: opacity 0.1s ease-out;
+}
+
+.trail-optimized:hover {
+  opacity: 1;
+}
+
+/* Animation classes are defined in src/styles/animations.css */
+
+/* Performance Optimizations */
+@media (prefers-reduced-motion: no-preference) {
+  .maze-grid-optimized .cell {
+    transition: transform 0.1s ease-out;
+  }
+  
+  .maze-grid-optimized .valid-move {
+    animation-duration: 0.08s;
+  }
+  
+  .maze-grid-optimized .trail-fade {
+    animation-duration: 0.08s;
+  }
+}
+
+/* Performance Indicators */
+.performance-warning {
+  @apply text-orange-600 bg-orange-50 border border-orange-200 px-2 py-1 rounded text-xs;
+}
+
+.performance-error {
+  @apply text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded text-xs;
+}
+
+/* =======================
+   Game UI Components
+   ======================= */
+
+/* Turn Indicators */
 .turn-indicator-p1 {
   @apply text-primary font-semibold;
 }
@@ -347,7 +657,7 @@
   @apply text-secondary font-semibold;
 }
 
-/* Queue token styling */
+/* Queue Tokens */
 .queue-token {
   @apply inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm font-medium;
 }
@@ -360,17 +670,24 @@
   @apply bg-secondary/20 text-secondary border border-secondary/30;
 }
 
-/* Speed indicator */
+.queue-token-default {
+  @apply bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors;
+}
+
+/* Game Status */
 .speed-indicator {
   @apply text-xs text-muted-foreground;
 }
 
-/* Execution progress */
 .executing-progress {
   @apply text-sm text-muted-foreground italic;
 }
 
-/* Scoreboard styling */
+.preview-path {
+  @apply bg-accent/10 border-accent/20;
+}
+
+/* Scoreboard */
 .scoreboard {
   @apply flex items-center gap-2 text-sm;
 }
@@ -383,7 +700,7 @@
   @apply text-secondary;
 }
 
-/* Statistics colors */
+/* Statistics */
 .stat-win {
   @apply text-primary;
 }
@@ -396,7 +713,7 @@
   @apply text-accent-foreground;
 }
 
-/* Player badge styling */
+/* Player Badges */
 .player-badge-p1 {
   @apply bg-primary hover:bg-primary/90;
 }
@@ -405,35 +722,7 @@
   @apply bg-secondary hover:bg-secondary/90;
 }
 
-/* Queue token default styling */
-.queue-token-default {
-  @apply bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors;
-}
-
-/* Preview path styling */
-.preview-path {
-  @apply bg-accent/10 border-accent/20;
-}
-
-/* Player token colors */
-.token-emerald {
-  @apply bg-primary border-primary/80;
-}
-
-.token-indigo {
-  @apply bg-secondary border-secondary/80;
-}
-
-/* Trail colors */
-.trail-emerald {
-  @apply bg-primary/30;
-}
-
-.trail-indigo {
-  @apply bg-secondary/30;
-}
-
-/* Celebration colors */
+/* Celebration */
 .celebration-p1 {
   @apply text-destructive;
 }
@@ -442,7 +731,10 @@
   @apply text-accent-foreground;
 }
 
-/* Game rail section styling */
+/* =======================
+   Game Rail Components
+   ======================= */
+
 .rail-section-turn {
   @apply border-2 border-primary/20;
 }
@@ -455,7 +747,10 @@
   @apply text-primary;
 }
 
-/* Stats drawer styling */
+/* =======================
+   Stats Drawer Components
+   ======================= */
+
 .stats-drawer-header {
   @apply border-2 border-accent/20 bg-gradient-to-br from-accent/5 to-accent/10;
 }
@@ -513,10 +808,9 @@
 }
 
 /* =======================
-   Switch Component Fixes
+   Switch Component
    ======================= */
 
-/* Ensure switches render properly */
 [data-slot="switch"] {
   position: relative;
   display: inline-flex;
@@ -552,7 +846,7 @@
   transform: translateX(0);
 }
 
-/* Dark mode switch adjustments */
+/* Theme-specific switch adjustments */
 .dark [data-slot="switch-thumb"] {
   background-color: var(--foreground);
 }
@@ -561,7 +855,6 @@
   background-color: var(--primary-foreground);
 }
 
-/* High contrast mode switch adjustments */
 .hc [data-slot="switch"] {
   border: 2px solid var(--border);
 }
@@ -576,7 +869,6 @@
   border: 1px solid var(--border);
 }
 
-/* Soft mode switch adjustments */
 .soft [data-slot="switch"] {
   background-color: var(--input);
 }
@@ -587,13 +879,4 @@
 
 .soft [data-slot="switch-thumb"] {
   background-color: var(--background);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
