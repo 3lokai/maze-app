@@ -1,0 +1,104 @@
+# CodeRabbit Configuration
+# This file configures AI-powered code review for the maze-app project
+
+# Review settings
+review:
+  # Enable AI code review
+  enabled: true
+  
+  # Review scope - what files to review
+  scope:
+    # Include TypeScript/React files
+    include:
+      - "src/**/*.{ts,tsx}"
+      - "docs/**/*.md"
+      - "*.{json,yml,yaml}"
+    
+    # Exclude generated files and dependencies
+    exclude:
+      - "node_modules/**"
+      - ".next/**"
+      - "dist/**"
+      - "build/**"
+      - "*.min.js"
+      - "*.bundle.js"
+
+# Quality gates
+quality:
+  # Code coverage threshold
+  coverage:
+    minimum: 80
+  
+  # Complexity limits
+  complexity:
+    max_cyclomatic: 10
+    max_cognitive: 7
+  
+  # Security checks
+  security:
+    enabled: true
+    severity_threshold: "medium"
+
+# Review instructions for AI
+instructions: |
+  You are reviewing code for a Next.js 15 + React 19 + TypeScript maze game application.
+  
+  Focus on:
+  - TypeScript strict mode compliance
+  - React best practices and hooks usage
+  - Component architecture and reusability
+  - State management patterns (Zustand)
+  - Accessibility (a11y) considerations
+  - Performance optimizations
+  - Code readability and maintainability
+  
+  The project follows these patterns:
+  - Uses shadcn/ui components with proper variant props
+  - Implements custom hooks for complex logic
+  - Uses branded types for type safety
+  - Follows BMad development method
+  - Prioritizes server components over client components
+  
+  Provide constructive feedback and suggest improvements.
+
+# Custom review rules
+rules:
+  - name: "TypeScript Strict Mode"
+    description: "Ensure strict TypeScript compliance"
+    pattern: ".*\\.tsx?$"
+    
+  - name: "React Best Practices"
+    description: "Check React patterns and hooks usage"
+    pattern: ".*\\.tsx$"
+    
+  - name: "Component Architecture"
+    description: "Review component structure and props"
+    pattern: "src/components/.*\\.tsx$"
+    
+  - name: "State Management"
+    description: "Check Zustand store patterns"
+    pattern: "src/store/.*\\.ts$"
+
+# Notification settings
+notifications:
+  # Comment on PRs
+  pr_comments: true
+  
+  # Create review summaries
+  summaries: true
+  
+  # Inline suggestions
+  inline_suggestions: true
+
+# Integration settings
+integration:
+  # GitHub App integration
+  github:
+    # Auto-approve on passing checks
+    auto_approve: false
+    
+    # Require review before merge
+    require_review: true
+    
+    # Block merge on critical issues
+    block_on_critical: true
