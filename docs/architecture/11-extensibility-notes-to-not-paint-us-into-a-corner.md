@@ -7,17 +7,32 @@
 * **Settings Integration**: Player management through settings panel
 * **Round-Robin Turns**: Dynamic turn order for variable player counts
 
-### v2: Multipliers & Scoreboard
-* **v2 Multipliers UX**: already supported via `{dir, n}` tokens; later allow `repeat` macros.
-* **v2 Scoreboard**: existing `scores` object; render streaks; optional best‐of-N.
-* **v2 Persistence**: localStorage wrapper for session data.
+### ✅ Epic 2: Maps & Maze Renderer Stability *(COMPLETED)*
+* **Multi-Map System**: Multiple maze layouts with catalog, preview, and validation
+* **Responsive Viewport**: Aspect-ratio locked cells with follow-cam for larger maps (up to 20×20)
+* **Performance Optimization**: DOM mode optimized for smooth 60fps rendering
+* **Overlay System**: Labels and emojis as absolute overlays preserving grid integrity
 
-### v3: Parent Controls & Settings *(ENHANCED)*
-* **v3 Maze scaling**: `maze` data structure supports variable `width`/`height`.
-* **v3 Advanced settings**: `config: {gridSize: 5|10|15, hazards: boolean, theme: 'default'|'hc'|'soft'}`.
-* **v3 Player presets**: Save/load player configurations.
+### 🔄 Epic 4a: Game UI Alignment *(NEXT PRIORITY)*
+* **Visual Consistency**: Header alignment with site design system
+* **Child-Friendly Controls**: Large arrow icons and colorful number pills
+* **Production Polish**: Remove debug overlays and dev-only UI elements
+* **Theming Integration**: Soft glowing trails and playful design elements
 
-### v4: Hazards & Complications
+### 🔄 Epic 3: Site Pages & Parent Content *(READY)*
+* **Storage Abstraction**: `StorageProvider` interface with migration-safe architecture
+* **Parent Dashboard**: Statistics tracking and JSON export functionality
+* **Content Pages**: Landing, Help, Parents pedagogy, Curriculum overview
+* **Settings Modal**: Tabbed interface for player and game configuration
+
+### 🔄 Epic 4: Curriculum System *(PLANNED)*
+* **Chapter Schema**: JSON-driven curriculum with prerequisites and feature gating
+* **Session Wrapper**: Chapter-specific game configuration and result tracking
+* **Progress Store**: Local and cloud-synced chapter completion tracking
+* **Badge System**: Achievement tracking with visual reward system
+* **Check Command**: Scoped introduction of conditional logic mechanic
+
+### v5: Advanced Learning Features
 * **v4 Hazard registry**: `hazards: Hazard[]` where `Hazard = {type: 'lion'|'door'|'hunter', position: Cell, config?: any}`.
 * **v4 Executor expansion**: `simulate(maze, pos, cmd, hazards, inventory)` → `{nextPos, ok, hitWallAt?, hazardHit?, inventoryChange?}`.
 * **v4 Inventory system**: `inventory: Record<PlayerId, {keys: number, shields: number, speedBoots: number}>`.

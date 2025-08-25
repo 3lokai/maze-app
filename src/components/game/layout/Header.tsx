@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { SettingsModal } from "./SettingsModal";
-import { StatsDrawerWrapper } from "./StatsDrawerWrapper";
+import { SettingsModal } from "../../settings/SettingsModal";
+import { StatsDrawerWrapper } from "../../dashboard/StatsDrawerWrapper";
 import { Play, Settings } from "lucide-react";
 import { useGameStore } from "@/store/gameStore";
 import { useMazeLayout } from '@/hooks/useMazeLayout';

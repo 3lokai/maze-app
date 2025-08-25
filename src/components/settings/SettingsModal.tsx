@@ -6,9 +6,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlayersTab } from "@/components/PlayersTab";
-import { ThemesTab } from "@/components/ThemesTab";
-import { AccessibilityTab } from "@/components/AccessibilityTab";
+import { PlayersTab } from "@/components/settings/tabs/PlayersTab";
+import { ThemesTab } from "@/components/settings/tabs/ThemesTab";
+import { AccessibilityTab } from "@/components/settings/tabs/AccessibilityTab";
 import { Settings } from "lucide-react";
 
 interface SettingsModalProps {

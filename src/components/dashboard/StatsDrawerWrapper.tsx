@@ -6,7 +6,7 @@ import {
   SheetTitle, 
   SheetTrigger 
 } from "@/components/ui/sheet";
-import { StatsDrawer } from "@/components/StatsDrawer";
+import { StatsDrawer } from "@/components/dashboard/StatsDrawer";
 import { PlayerId, Cell } from "@/types/maze-app";
 import { BarChart3 } from "lucide-react";
 

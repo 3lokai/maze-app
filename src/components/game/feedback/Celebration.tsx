@@ -30,7 +30,6 @@ export function Celebration({ show, winner, onComplete, mazeSize }: CelebrationP
       return {
         ...baseConfig,
         particleCount: 50, // Reduced from 100
-        maxFirings: 5, // Reduced from 10
         firingInterval: 800, // Increased from 500ms
       };
     }
@@ -38,7 +37,6 @@ export function Celebration({ show, winner, onComplete, mazeSize }: CelebrationP
     return {
       ...baseConfig,
       particleCount: 100,
-      maxFirings: 10,
       firingInterval: 500,
     };
   }, [performanceMode]);
@@ -66,7 +64,7 @@ export function Celebration({ show, winner, onComplete, mazeSize }: CelebrationP
       
       // Function to fire confetti with performance monitoring
       const fireConfetti = () => {
-        if (firingCountRef.current < config.maxFirings && confettiRef.current) {
+        if (firingCountRef.current < maxFirings && confettiRef.current) {
           const startTime = performance.now();
           
           confettiRef.current.fire({
@@ -83,7 +81,7 @@ export function Celebration({ show, winner, onComplete, mazeSize }: CelebrationP
           firingCountRef.current++;
           
           // Schedule next firing if under limit
-          if (firingCountRef.current < config.maxFirings) {
+          if (firingCountRef.current < maxFirings) {
             setTimeout(fireConfetti, config.firingInterval);
           }
         }

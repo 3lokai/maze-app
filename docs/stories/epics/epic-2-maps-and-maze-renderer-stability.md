@@ -1,5 +1,3 @@
-🎭 Party-mode here — Epic 2 is a big one, let’s slice it into **INVEST-compliant stories** with AC + Demo hooks.
-
 ---
 
 # 📋 Epic 2 — Maps & Maze Renderer Stability (UX Overhaul)

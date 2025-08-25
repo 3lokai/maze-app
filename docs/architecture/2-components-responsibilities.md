@@ -65,3 +65,29 @@
   * Follow-cam algorithm: computes safe frame and animates scroll to keep player visible.
   * Performance optimization: `will-change: transform`, translate3d for smooth pans.
 
+## Upcoming Epic Components
+
+### Epic 4a - Game UI Alignment
+* **Enhanced `Controls`**: Large arrow icons, colorful number pills, simplified layout
+* **Enhanced `HUD`**: Icon-based stats (🏆💥👣), compact display
+* **Enhanced `Header`**: Site design system alignment, consistent fonts/gradients
+* **Theme system**: CSS custom properties for playful styling
+
+### Epic 3 - Site Pages & Parent Content
+* **`LandingPage`**: Hero section with "Play Now" and "For Parents" CTAs
+* **`HelpPage`**: Illustrated step-by-step walkthrough for children
+* **`ParentsPage`**: Pedagogy content and learning benefits explanation
+* **`ParentDashboard`**: Statistics display, settings, and JSON export
+* **`CurriculumPage`**: Chapter cards overview (stubbed for Epic 3)
+* **`SettingsModal`**: Tabbed interface (Players/Game tabs)
+* **`/lib/storage.ts`**: `StorageProvider` abstraction for local→cloud migration
+
+### Epic 4 - Curriculum System
+* **`ChapterSelectPage`**: Interactive chapter cards with lock states and badges
+* **`SessionWrapper`**: Chapter-specific game configuration component
+* **`BadgeBook`**: Achievement display with sticker book metaphor
+* **`ProgressTracker`**: Chapter completion and statistics tracking
+* **`AuthProvider`**: Supabase integration with magic-link authentication
+* **`/lib/curriculum.ts`**: Chapter loading, validation, and progress management
+* **`/lib/supabase.ts`**: Cloud storage provider implementing `StorageProvider`
+

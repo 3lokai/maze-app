@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { EmojiPicker } from "@/components/EmojiPicker";
+import { EmojiPicker } from "@/components/settings/EmojiPicker";
 import { useGameStore } from "@/store/gameStore";
 import { PlayerId } from "@/types/maze-app";
 import { getMaxPlayers, getMinPlayers, type PlayerEmoji } from "@/types/maze";

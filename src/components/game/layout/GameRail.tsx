@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CommandBuilder } from "@/components/CommandBuilder";
+import { CommandBuilder } from "@/components/game/controls/CommandBuilder";
 import { CommandToken } from "@/types/commands";
 import { ExecutionState } from "@/types/execution";
 import { Dir } from "@/types/maze-app";

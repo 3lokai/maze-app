@@ -33,6 +33,30 @@
 - **Overlay System**: Labels and emojis rendered as absolute overlays, not layout content
 - **Map Picker**: Lightweight interface for map selection with thumbnails and difficulty indicators
 
+## Upcoming Epic Changes
+
+### Epic 4a — Game UI Alignment
+- **Visual Consistency**: Header alignment with site design system
+- **Child-Friendly Controls**: Large arrow icons and colorful number pills
+- **Production Polish**: Remove debug overlays and dev-only UI elements
+- **Accessibility**: Enhanced touch targets and visual feedback
+- **Theming**: Soft glowing trails and playful design elements
+
+### Epic 3 — Site Pages & Parent Content  
+- **Storage Abstraction**: LocalStorageProvider with migration-safe architecture
+- **New Routes**: Landing (`/`), Help (`/help`), Parents (`/parents`), Parent Dashboard (`/parent`)
+- **Settings Modal**: Tabbed interface for player and game configuration
+- **Export System**: JSON export for parent tracking and data portability
+- **Curriculum Stub**: Initial curriculum overview page with chapter cards
+
+### Epic 4 — Curriculum System
+- **Chapter Schema**: JSON-driven curriculum with prerequisites and feature gating
+- **Session Wrapper**: Chapter-specific game configuration and result tracking
+- **Progress Store**: Local and cloud-synced chapter completion tracking
+- **Badge System**: Achievement tracking with visual reward system
+- **Supabase Integration**: Authentication and cross-device progress sync
+- **Check Command**: Scoped introduction of conditional logic mechanic
+
 ## Epic 1 Changes Summary
 
 - **Player System**: Expanded from fixed 2 players to flexible 1-4 players

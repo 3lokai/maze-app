@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlayerManagement } from "@/components/PlayerManagement";
+import { PlayerManagement } from "@/components/settings/PlayerManagement";
 import { Users } from "lucide-react";
 
 export function PlayersTab() {

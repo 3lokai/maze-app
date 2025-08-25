@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { MapPreview } from "@/components/MapPreview";
+import { MapPreview } from "@/components/game/maze/MapPreview";
 import { cn } from "@/lib/utils";
 import type { MapId } from "@/hooks/useMazeLayout";
 import type { MazeData } from "@/types/maze-app";

@@ -1,7 +1,7 @@
 import { MAZE_DATA, getCellType, performanceUtils } from "@/lib/maze";
 import type { Cell, PlayerId, MazeData } from "@/types/maze-app";
 import { PlayerToken } from "./PlayerToken";
-import { CollisionFeedback } from "./CollisionFeedback";
+import { CollisionFeedback } from "../feedback/CollisionFeedback";
 import { MazeLegend } from "./MazeLegend";
 import { useGameStore } from "@/store/gameStore";
 import { useCamera } from "@/hooks/useCamera";

@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { MazeRenderer } from "@/components/MazeRenderer";
-import { Celebration } from "@/components/Celebration";
+import { MazeRenderer, Celebration, Header, GameRail, GameAnnouncement, MapPicker, PerformanceMonitor } from "@/components/game";
 import { useGameStore } from "@/store/gameStore";
 import { useExecutor } from "@/hooks/useExecutor";
 import { useCollision } from "@/hooks/useCollision";
@@ -11,13 +10,8 @@ import { useCelebration } from "@/hooks/useCelebration";
 import { useTurnManagement } from "@/hooks/useTurnManagement";
 import { Toaster } from "@/components/ui/sonner";
 import { MAZE_DATA, memoryManager } from "@/lib/maze";
-import { Header } from "@/components/Header";
-import { GameRail } from "@/components/GameRail";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useMazeLayout, type MapId } from "@/hooks/useMazeLayout";
-import { GameAnnouncement } from "@/components/GameAnnouncement";
-import { MapPicker } from "@/components/MapPicker";
-import { PerformanceMonitor } from "@/components/PerformanceMonitor";
 import type { GameStatus } from "@/types/maze-app";
 import { cn } from "@/lib/utils";
 import { Monitor, Smartphone, BookOpen, Brain } from "lucide-react";
