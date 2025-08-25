@@ -1,5 +1,8 @@
-/* Collision feedback animations */
+/* =======================
+   Animation Keyframes
+   ======================= */
 
+/* Collision & Feedback Animations */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
@@ -17,33 +20,28 @@
   50% { opacity: 0.5; }
 }
 
-/* Utility classes for collision animations */
-.animate-shake {
-  animation: shake 0.5s ease-in-out;
+@keyframes pulse-turn {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
 }
 
-.animate-flash-red {
-  animation: flashRed 0.6s ease-in-out;
+@keyframes valid-move {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
 }
 
-.animate-pulse-error {
-  animation: pulse 0.3s ease-in-out 3;
+@keyframes trail-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Combination animation for collision */
-.collision-cell {
-  animation: 
-    shake 0.5s ease-in-out,
-    flashRed 0.6s ease-in-out;
-}
-
-/* Button bounce animation */
+/* Interactive Animations */
 @keyframes bounce {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
 }
 
-/* Queue token bounce animation */
 @keyframes tokenBounce {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
@@ -65,7 +63,47 @@
   100% { opacity: 0.3; }
 }
 
-/* Utility classes for UI animations */
+/* =======================
+   Animation Utility Classes
+   ======================= */
+
+/* Collision & Feedback */
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-flash-red {
+  animation: flashRed 0.6s ease-in-out;
+}
+
+.animate-pulse-error {
+  animation: pulse 0.3s ease-in-out 3;
+}
+
+.collision-cell {
+  animation: 
+    shake 0.5s ease-in-out,
+    flashRed 0.6s ease-in-out;
+}
+
+/* Game State Animations */
+.shake {
+  animation: shake 0.25s ease-in-out;
+}
+
+.turn-active {
+  animation: pulse-turn 2s ease-in-out infinite;
+}
+
+.valid-move {
+  animation: valid-move 0.1s ease-out;
+}
+
+.trail-fade {
+  animation: trail-fade 0.12s ease-in;
+}
+
+/* Interactive Elements */
 .animate-bounce {
   animation: bounce 0.3s ease-in-out;
 }
@@ -82,12 +120,12 @@
   animation: ghostTrail 2s ease-in-out infinite;
 }
 
-/* Enhanced button interactions */
+/* Button Interactions */
 .button-bounce:active {
   animation: bounce 0.1s ease-in-out;
 }
 
-/* Glow effect for active player */
+/* Player Effects */
 .player-glow {
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
   transition: box-shadow 0.3s ease-in-out;
@@ -97,7 +135,11 @@
   box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
 }
 
-/* Cross-platform emoji rendering */
+/* =======================
+   Cross-Platform Support
+   ======================= */
+
+/* Emoji Rendering */
 .emoji-fallback {
   font-family: 
     "Apple Color Emoji",      /* iOS, macOS */
@@ -112,13 +154,19 @@
   text-rendering: optimizeSpeed;
 }
 
-/* Respect user motion preferences */
+/* =======================
+   Accessibility Support
+   ======================= */
+
+/* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   .animate-bounce,
   .animate-glow,
   .animate-ghost-trail,
   .animate-token-bounce,
-  .button-bounce:active {
+  .button-bounce:active,
+  .turn-active,
+  .animate-glow {
     animation: none;
   }
   
@@ -133,7 +181,7 @@
   }
 }
 
-/* High contrast mode support */
+/* High Contrast Mode */
 @media (prefers-contrast: high) {
   .emoji-fallback {
     text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);

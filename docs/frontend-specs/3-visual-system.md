@@ -1,49 +1,26 @@
 # 3) Visual System
 
-## Color Palette
+* **Players**
 
-* **Primary**: Blue (#3B82F6) - Player 1 default
-* **Secondary**: Orange (#F97316) - Player 2 default  
-* **Tertiary**: Green (#10B981) - Player 3 default
-* **Quaternary**: Purple (#8B5CF6) - Player 4 default
-* **Neutral**: Gray (#6B7280)
-* **Success**: Green (#10B981)
-* **Error**: Red (#EF4444)
-* **Warning**: Yellow (#F59E0B)
+  * P1 color: `emerald-600` (trail `emerald-300`)
+  * P2 color: `indigo-600` (trail `indigo-300`)
+  * Tokens: filled circle with player color ring
+  * Names: "Player 1" / "Player 2" (default), scalable to 4 players
+* **Maze**
 
-## Player Color System
+  * Cells: `bg-muted` with `border-border/60`
+  * Walls: 2px lines `bg-foreground/70`
+  * **NEW:** Start: Emoji overlay `🏡` (absolute positioned, fixed size)
+  * **NEW:** Goal: Emoji overlay `🌳` (absolute positioned, fixed size)
+  * **NEW:** Small screens (≤390px): Icons only, legend below maze
+  * **NEW:** Path route cells: highlighted with gradient background
+  * **NEW:** Theme labels: "🏠 Home" and "🌲 Forest" badges
+* **Theme System**
 
-* **Player 1**: `player-badge-p1` (Blue theme)
-* **Player 2**: `player-badge-p2` (Orange theme)
-* **Player 3**: `player-badge-p3` (Green theme)
-* **Player 4**: `player-badge-p4` (Purple theme)
+  * **Default**: Standard shadcn palette
+  * **High-Contrast**: Swap CSS vars: `--background`, `--foreground`, `--muted`, bump borders to 2px, ensure ≥ 4.5:1
+  * **Soft**: Warmer palette for long sessions (amber/rose tones, reduced contrast)
+  * Theme toggle in HUD with legend: "Soft = warmer palette for long sessions"
 
-## Emoji Identity System
-
-* **🐢 Turtle**: Player 1 default (steady, reliable)
-* **🦊 Fox**: Player 2 default (clever, quick)
-* **🐰 Rabbit**: Player 3 default (energetic, bouncy)
-* **🦁 Lion**: Player 4 default (bold, leader)
-
-## Typography
-
-* **Headings**: Inter, semibold
-* **Body**: Inter, regular
-* **Player Names**: Inter, medium (for emphasis)
-* **Stats**: Inter, monospace (for numbers)
-
-## Spacing
-
-* **Grid**: 8px base unit
-* **Card padding**: 16px
-* **Button spacing**: 8px
-* **Player row height**: 48px
-
-## Animation Timing
-
-* **Fast**: 100ms (micro-interactions)
-* **Medium**: 200ms (state changes)
-* **Slow**: 300ms (transitions)
-
----
+Typography: shadcn default; titles `text-lg`, labels `text-sm`, HUD numbers `text-2xl font-semibold`.
 

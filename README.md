@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Coding Maze - Desktop Learning Experience
 
-## Getting Started
+A Next.js 15 + React 19 + TypeScript educational maze game designed specifically for desktop and laptop computers.
 
-First, run the development server:
+## 🎯 Educational Philosophy
+
+**Why Desktop Only?**
+
+This game is intentionally designed as a desktop-only experience to:
+
+- **Promote Focused Learning**: Larger screens provide better visibility and reduce distractions
+- **Build Programming Skills**: Desktop interfaces are better suited for learning programming concepts
+- **Encourage Family Time**: Designed for shared learning experiences on family computers
+- **Reduce Screen Addiction**: Encourages kids to use computers for educational purposes rather than mobile devices
+
+## 🚀 Features
+
+- **Multi-Player Programming Challenges**: 2-4 players can compete and collaborate
+- **Visual Programming Interface**: Drag-and-drop command building
+- **Multiple Maze Themes**: Castle, Forest, Mountain, City, and Garden layouts
+- **Educational Focus**: Teaches programming logic, problem-solving, and spatial reasoning
+- **Accessibility Features**: High contrast mode, reduced motion support, keyboard navigation
+
+## 🖥️ System Requirements
+
+- **Desktop or Laptop Computer** (Windows, macOS, or Linux)
+- **Modern Web Browser** (Chrome, Firefox, Safari, Edge)
+- **Minimum Screen Size**: 768px width (tablet or larger)
+- **Not Compatible**: Mobile phones or small tablets
+
+## 🎮 How to Play
+
+1. **Choose a Maze**: Select from various themed layouts with different difficulty levels
+2. **Build Commands**: Use direction buttons and number pad to create movement sequences
+3. **Execute & Learn**: Watch your commands execute and learn from mistakes
+4. **Compete**: Take turns with other players to reach the goal first
+5. **Celebrate**: Enjoy the satisfaction of solving programming challenges!
+
+## 🛠️ Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📚 Educational Benefits
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Logical Thinking**: Players learn to think step-by-step
+- **Debugging Skills**: Learn to identify and fix programming errors
+- **Spatial Reasoning**: Understand grid-based movement and navigation
+- **Collaboration**: Work together or compete with other players
+- **Problem Solving**: Develop strategies to reach goals efficiently
 
-## Learn More
+## 🎨 Technical Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS with custom design system
+- **State Management**: Zustand
+- **UI Components**: Custom component library built on shadcn/ui
+- **Performance**: Optimized for large maze grids with viewport culling
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚧 Development Status
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- ✅ Core maze rendering and gameplay
+- ✅ Multi-player support (2-4 players)
+- ✅ Multiple maze layouts and themes
+- ✅ Command building and execution
+- ✅ Accessibility features
+- ✅ Desktop-only optimization
+- 🔄 UX polish and final refinements
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Designed to make programming education engaging, accessible, and family-friendly!*

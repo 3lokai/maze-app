@@ -3,6 +3,264 @@ import type { MazeLayout, MazeEdgeLayout } from '@/types/maze';
 import { MazeLayoutSchema } from '@/types/maze';
 
 /**
+ * Grid size constraints for performance optimization
+ */
+export const GRID_CONSTRAINTS = {
+  MAX_WIDTH: 20,
+  MAX_HEIGHT: 20,
+  MAX_CELLS: 400, // 20×20
+  PERFORMANCE_THRESHOLD: 15, // Switch to optimized mode for grids > 15×15
+} as const;
+
+/**
+ * Performance monitoring utilities
+ */
+export const performanceUtils = {
+  /**
+   * Check if grid size requires performance optimizations
+   */
+  needsOptimization: (width: number, height: number): boolean => {
+    return width > GRID_CONSTRAINTS.PERFORMANCE_THRESHOLD || 
+           height > GRID_CONSTRAINTS.PERFORMANCE_THRESHOLD;
+  },
+
+  /**
+   * Validate grid size constraints
+   */
+  validateGridSize: (width: number, height: number): { isValid: boolean; reason?: string } => {
+    if (width > GRID_CONSTRAINTS.MAX_WIDTH || height > GRID_CONSTRAINTS.MAX_HEIGHT) {
+      return { 
+        isValid: false, 
+        reason: `Grid size ${width}×${height} exceeds maximum allowed size of ${GRID_CONSTRAINTS.MAX_WIDTH}×${GRID_CONSTRAINTS.MAX_HEIGHT}` 
+      };
+    }
+    
+    const totalCells = width * height;
+    if (totalCells > GRID_CONSTRAINTS.MAX_CELLS) {
+      return { 
+        isValid: false, 
+        reason: `Total cells ${totalCells} exceeds maximum allowed ${GRID_CONSTRAINTS.MAX_CELLS}` 
+      };
+    }
+    
+    return { isValid: true };
+  },
+
+  /**
+   * Get performance mode for grid size
+   */
+  getPerformanceMode: (width: number, height: number): 'standard' | 'optimized' => {
+    return performanceUtils.needsOptimization(width, height) ? 'optimized' : 'standard';
+  }
+};
+
+/**
+ * Generic object pool for reusing objects
+ */
+function createObjectPool<T>(factory: () => T, reset: (obj: T) => void, maxSize: number = 100) {
+  const pool: T[] = [];
+  let created = 0;
+
+  return {
+    acquire: (): T => {
+      if (pool.length > 0) {
+        const obj = pool.pop()!;
+        reset(obj);
+        return obj;
+      }
+      created++;
+      return factory();
+    },
+
+    release: (obj: T): void => {
+      if (pool.length < maxSize) {
+        pool.push(obj);
+      }
+      // If pool is full, let the object be garbage collected
+    },
+
+    clear: (): void => {
+      pool.length = 0;
+    },
+
+    getStats: () => ({
+      poolSize: pool.length,
+      created,
+      maxSize,
+    }),
+  };
+}
+
+/**
+ * Object pooling utilities for memory optimization
+ */
+export const objectPool = {
+  createPool: createObjectPool,
+
+  /**
+   * Cell position pool for trail rendering
+   */
+  cellPool: createObjectPool(
+    () => ({ r: 0, c: 0 }),
+    (cell: { r: number; c: number }) => {
+      cell.r = 0;
+      cell.c = 0;
+    },
+    1000
+  ),
+
+  /**
+   * Trail array pool for player trails
+   */
+  trailPool: createObjectPool(
+    () => [] as Cell[],
+    (trail: Cell[]) => {
+      trail.length = 0;
+    },
+    100
+  ),
+
+  /**
+   * Viewport bounds pool for culling calculations
+   */
+  viewportBoundsPool: createObjectPool(
+    () => ({ startRow: 0, endRow: 0, startCol: 0, endCol: 0 }),
+    (bounds: { startRow: number; endRow: number; startCol: number; endCol: number }) => {
+      bounds.startRow = 0;
+      bounds.endRow = 0;
+      bounds.startCol = 0;
+      bounds.endCol = 0;
+    },
+    10
+  ),
+};
+
+/**
+ * Memory management utilities
+ */
+export const memoryManager = {
+  /**
+   * Track memory usage and detect leaks
+   */
+  createMemoryTracker: () => {
+    const snapshots: number[] = [];
+    let lastCheck = performance.now();
+    const checkInterval = 5000; // 5 seconds
+
+    return {
+      snapshot: () => {
+        const now = performance.now();
+        if (now - lastCheck >= checkInterval) {
+          const memory = performanceManager.getMemoryUsage();
+          if (memory !== null) {
+            snapshots.push(memory);
+            if (snapshots.length > 12) { // Keep last minute of data
+              snapshots.shift();
+            }
+          }
+          lastCheck = now;
+        }
+      },
+
+      detectLeak: (threshold: number = 10): boolean => {
+        if (snapshots.length < 6) return false;
+
+        const recent = snapshots.slice(-6);
+        const older = snapshots.slice(0, 6);
+        const recentAvg = recent.reduce((sum, val) => sum + val, 0) / recent.length;
+        const olderAvg = older.reduce((sum, val) => sum + val, 0) / older.length;
+
+        return recentAvg - olderAvg > threshold;
+      },
+
+      getStats: () => ({
+        current: snapshots[snapshots.length - 1] || null,
+        average: snapshots.length > 0 ? snapshots.reduce((sum, val) => sum + val, 0) / snapshots.length : null,
+        max: snapshots.length > 0 ? Math.max(...snapshots) : null,
+        samples: snapshots.length,
+      }),
+
+      clear: () => {
+        snapshots.length = 0;
+      },
+    };
+  },
+
+  /**
+   * Cleanup utilities for preventing memory leaks
+   */
+  cleanup: {
+    /**
+     * Clear all object pools
+     */
+    clearPools: () => {
+      objectPool.cellPool.clear();
+      objectPool.trailPool.clear();
+      objectPool.viewportBoundsPool.clear();
+    },
+
+    /**
+     * Reset all performance monitoring
+     */
+    resetMonitoring: () => {
+      if (typeof window !== 'undefined' && (window as { performanceMonitor?: { clear: () => void } }).performanceMonitor) {
+        (window as { performanceMonitor?: { clear: () => void } }).performanceMonitor?.clear();
+      }
+    },
+
+    /**
+     * Comprehensive cleanup for large grid switches
+     */
+    fullCleanup: () => {
+      memoryManager.cleanup.clearPools();
+      memoryManager.cleanup.resetMonitoring();
+      
+      // Force garbage collection if available
+      if (typeof window !== 'undefined' && (window as { gc?: () => void }).gc) {
+        (window as { gc?: () => void }).gc?.();
+      }
+    },
+  },
+};
+
+/**
+ * Performance manager for comprehensive monitoring
+ */
+export const performanceManager = {
+  /**
+   * Get memory usage if available
+   */
+  getMemoryUsage: (): number | null => {
+    if ('memory' in performance) {
+      return ((performance as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize) / 1024 / 1024; // MB
+    }
+    return null;
+  },
+
+  /**
+   * Measure execution time of a function
+   */
+  measureTime: <T>(fn: () => T, label?: string): T => {
+    const start = performance.now();
+    const result = fn();
+    const end = performance.now();
+    
+    if (label) {
+      console.log(`${label}: ${(end - start).toFixed(2)}ms`);
+    }
+    
+    return result;
+  },
+
+  /**
+   * Check if frame time is within budget (16ms for 60fps)
+   */
+  isFrameTimeValid: (frameTime: number): boolean => {
+    return frameTime <= 16;
+  },
+};
+
+/**
  * Fixed 10×10 maze data with walls, start, and goal positions
  * Start: (0,0), Goal: (9,9)
  */

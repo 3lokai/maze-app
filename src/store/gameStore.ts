@@ -4,8 +4,8 @@ import type { MazeData } from '@/types/maze-app';
 import { asMagnitude1to10 } from '@/lib/utils';
 import type { CommandToken } from '@/types/commands';
 import type { ExecutionSpeed } from '@/types/execution';
-import type { PlayerConfig } from '@/types/maze';
-import { DEFAULT_PLAYER_CONFIGS, getMaxPlayers, getMinPlayers } from '@/types/maze';
+import type { PlayerConfig, ViewportState, CameraConfig } from '@/types/maze';
+import { DEFAULT_PLAYER_CONFIGS, getMaxPlayers, getMinPlayers, DEFAULT_CAMERA_CONFIG } from '@/types/maze';
 
 interface GameState {
   // Player positions and trails - Partial to support variable player count
@@ -37,6 +37,10 @@ interface GameState {
   // Execution state
   executionSpeed: ExecutionSpeed;
   
+  // Viewport and camera state
+  viewport: ViewportState;
+  cameraConfig: CameraConfig;
+  
   // Actions
   setPosition: (player: PlayerId, position: Cell) => void;
   addToTrail: (player: PlayerId, position: Cell) => void;
@@ -46,6 +50,7 @@ interface GameState {
   incrementScore: (player: PlayerId) => void;
   incrementCrash: (player: PlayerId) => void;
   resetGame: (maze?: MazeData) => void;
+  onMapChange: (maze: MazeData) => void;
   
   // Player management actions
   addPlayer: () => void;
@@ -74,6 +79,13 @@ interface GameState {
   
   // Execution actions
   setExecutionSpeed: (speed: ExecutionSpeed) => void;
+  
+  // Viewport and camera actions
+  setViewport: (viewport: Partial<ViewportState>) => void;
+  updateViewportSize: (width: number, height: number) => void;
+  setCameraConfig: (config: Partial<CameraConfig>) => void;
+  enableFollowCam: (playerId: PlayerId) => void;
+  disableFollowCam: () => void;
   
   // Stats calculation actions
   getPlayerStats: (playerId: PlayerId) => { wins: number; crashes: number; steps: number };
@@ -113,6 +125,14 @@ export const useGameStore = create<GameState>((set, get) => ({
   showAnnouncement: false,
   commandQueue: [],
   executionSpeed: 'medium',
+  viewport: { 
+    scrollX: 0, 
+    scrollY: 0, 
+    width: 800, 
+    height: 600, 
+    isFollowing: false 
+  },
+  cameraConfig: DEFAULT_CAMERA_CONFIG,
 
   // Actions
   setPosition: (player: PlayerId, position: Cell) =>
@@ -185,6 +205,35 @@ export const useGameStore = create<GameState>((set, get) => ({
       status: 'idle',
       commandQueue: [],
       crashes: newCrashes,
+    });
+  },
+
+  // Map change handler - resets game state when map changes
+  onMapChange: (maze: MazeData) => {
+    const startPosition = maze.start;
+    const state = get();
+    const activePlayers = state.getActivePlayers();
+    
+    const newPositions: Partial<Record<PlayerId, Cell>> = {};
+    const newTrails: Partial<Record<PlayerId, Cell[]>> = {};
+    const newCrashes: Partial<Record<PlayerId, number>> = {};
+    
+    activePlayers.forEach(playerId => {
+      newPositions[playerId] = startPosition;
+      newTrails[playerId] = [startPosition];
+      newCrashes[playerId] = 0;
+    });
+    
+    set({
+      positions: newPositions,
+      trails: newTrails,
+      currentPlayer: activePlayers[0] || 1,
+      status: 'idle',
+      commandQueue: [],
+      crashes: newCrashes,
+      winner: null,
+      showCelebration: false,
+      showAnnouncement: false,
     });
   },
 
@@ -304,6 +353,24 @@ export const useGameStore = create<GameState>((set, get) => ({
   // Execution actions
   setExecutionSpeed: (speed: ExecutionSpeed) =>
     set({ executionSpeed: speed }),
+
+  // Viewport and camera actions
+  setViewport: (viewport: Partial<ViewportState>) =>
+    set((state) => ({ viewport: { ...state.viewport, ...viewport } })),
+  updateViewportSize: (width: number, height: number) =>
+    set((state) => ({ viewport: { ...state.viewport, width, height } })),
+  setCameraConfig: (config: Partial<CameraConfig>) =>
+    set((state) => ({ cameraConfig: { ...state.cameraConfig, ...config } })),
+  enableFollowCam: (playerId: PlayerId) =>
+    set((state) => ({ 
+      viewport: { ...state.viewport, isFollowing: true, targetPlayer: playerId },
+      cameraConfig: { ...state.cameraConfig }
+    })),
+  disableFollowCam: () =>
+    set((state) => ({ 
+      viewport: { ...state.viewport, isFollowing: false, targetPlayer: undefined },
+      cameraConfig: { ...state.cameraConfig }
+    })),
 
   // Win actions
   setWinner: (player: PlayerId) =>

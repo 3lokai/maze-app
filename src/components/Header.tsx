@@ -17,16 +17,20 @@ export function Header() {
   };
 
   return (
-    <header className="mb-8">
+    <header className="mb-8 p-6 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border-2 shadow-lg">
       <div className="flex items-center justify-between">
         {/* Left side - Title */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Coding Maze</h1>
-          <p className="text-muted-foreground">2-Player Programming Challenge</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Coding Maze
+          </h1>
+          <p className="text-muted-foreground mt-1 font-medium">
+            Desktop Learning Experience • 2-Player Programming Challenge
+          </p>
         </div>
 
         {/* Right side - Controls */}
-        <div className="flex items-center gap-3" role="group" aria-label="Game controls">
+        <div className="flex items-center gap-4" role="group" aria-label="Game controls">
           {/* Play Again Button */}
           <Button 
             onClick={handlePlayAgain}

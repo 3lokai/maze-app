@@ -19,14 +19,15 @@ export function PlayerToken({ player, isCurrentPlayer = false, className = "" }:
   return (
     <div
       className={cn(
-        "w-8 h-8 flex items-center justify-center",
-        "text-lg transition-all duration-300 ease-in-out",
-        isCurrentPlayer && "scale-110",
+        "w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center",
+        "text-xl sm:text-2xl transition-all duration-300 ease-in-out",
+        "rounded-full shadow-lg border-2 border-white",
+        isCurrentPlayer && "scale-110 shadow-xl",
         className
       )}
       title={`${playerName}${isCurrentPlayer ? ' (Current)' : ''}`}
     >
-      <span>{emoji}</span>
+      <span className="emoji-fallback">{emoji}</span>
     </div>
   );
 }

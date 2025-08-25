@@ -1,28 +1,8 @@
-/* High Contrast Theme - Updated to match globals.css .hc class */
-.hc {
-  --background: oklch(0.000 0.000 0);
-  --foreground: oklch(1.000 0.000 0);
-  --card: oklch(0.000 0.000 0);
-  --card-foreground: oklch(1.000 0.000 0);
-  --popover: oklch(0.000 0.000 0);
-  --popover-foreground: oklch(1.000 0.000 0);
-  --primary: oklch(0.600 0.200 120.00000000000001);
-  --primary-foreground: oklch(1.000 0.000 0);
-  --secondary: oklch(0.600 0.200 260.00000000000006);
-  --secondary-foreground: oklch(1.000 0.000 0);
-  --muted: oklch(0.150 0.000 0);
-  --muted-foreground: oklch(0.800 0.000 0);
-  --accent: oklch(0.150 0.000 0);
-  --accent-foreground: oklch(1.000 0.000 0);
-  --destructive: oklch(0.600 0.200 25.000000000000004);
-  --destructive-foreground: oklch(1.000 0.000 0);
-  --border: oklch(0.700 0.000 0);
-  --input: oklch(0.700 0.000 0);
-  --ring: oklch(1.000 0.000 0);
-  --radius: 0.5rem;
-}
+/* =======================
+   Accessibility Utilities
+   ======================= */
 
-/* Reduced Motion */
+/* Reduced Motion Support */
 .reduced-motion *,
 .reduced-motion *::before,
 .reduced-motion *::after {
@@ -32,7 +12,7 @@
   scroll-behavior: auto !important;
 }
 
-/* Large Text */
+/* Large Text Support */
 .large-text {
   font-size: 1.2em;
 }
@@ -56,7 +36,7 @@
   line-height: 1.6;
 }
 
-/* Focus indicators for better accessibility */
+/* Focus Management */
 *:focus {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
@@ -68,7 +48,7 @@
   outline-offset: 3px;
 }
 
-/* Minimum touch target sizes */
+/* Touch Target Sizing */
 button,
 [role="button"],
 input[type="button"],
@@ -78,7 +58,7 @@ input[type="reset"] {
   min-width: 44px;
 }
 
-/* Skip link for keyboard navigation */
+/* Skip Navigation */
 .skip-link {
   position: absolute;
   top: -40px;
@@ -95,7 +75,7 @@ input[type="reset"] {
   top: 6px;
 }
 
-/* Screen reader only text */
+/* Screen Reader Utilities */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -106,5 +86,10 @@ input[type="reset"] {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* High contrast emoji support */
+.hc .emoji-fallback {
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
 }
 
