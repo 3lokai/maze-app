@@ -1,9 +1,18 @@
 # 2) Components & Responsibilities
 
-* **`Maze`**
-  * Renders 10×10 cells, walls, start/goal, dynamic player tokens (1-4), colored trails.
+* **`MazeViewport`** *(RENAMED from Maze)*
+  * Renders maze cells with aspect-ratio locked squares, walls, start/goal, dynamic player tokens (1-4), colored trails.
+  * **Viewport Management**: Scrollable container with follow-cam for larger maps (up to 20×20).
+  * **Overlay System**: Labels and emojis rendered as absolute overlays, not layout content.
   * Pure presentational: receives `maze`, `positions`, `trails`, `status`, `currentPlayer`, `playerConfigs`.
-  * Exposes refs for shake animation target.
+  * Exposes refs for shake animation target and viewport control.
+  * Emits `onViewportJump(to: Cell)` for follow-cam coordination.
+
+* **`MapPicker`** *(NEW)*
+  * Lightweight map selection interface with thumbnails and preview.
+  * Displays catalog of available maps with difficulty indicators.
+  * Calls `loadLayout(id)` to switch maps.
+  * Responsive design: thumbnails adapt to screen size.
 
 * **`TurnCard`**
   * Dynamic turn indicator with player avatar and scoreboard.
@@ -16,33 +25,43 @@
   * Actions: **Append**, **Undo**, **Reset Player**, **Step**, **Run**, **Speed**.
   * Disabled when `status=executing`.
   * Player-specific command queue styling.
+  * Responsive: buttons scale to ≥44px on mobile.
 
 * **`HUD`**
   * Dynamic per-player stats display (1-4 players): steps/crashes/wins.
   * Play Again; optional High-Contrast toggle.
   * Adaptive record panel with player-specific rows.
+  * Receives `mapId`, `size` for display only.
 
-* **`PlayerManagement`** *(NEW)*
+* **`PlayerManagement`**
   * Player settings interface: add/remove/edit players.
   * Name customization and emoji selection (🐢🐰🦊🦁).
   * Color customization and player activation toggle.
   * Integration with settings panel.
 
-* **`SettingsDropdown`** *(ENHANCED)*
+* **`SettingsDropdown`**
   * Enhanced settings panel with player management section.
   * Player configuration controls.
   * Accessibility and visual settings.
 
 * **`/lib/maze.ts`**
-  * Exports fixed `maze` data ({ width, height, walls\[], start, goal }).
+  * Exports `maze` data ({ width, height, walls\[], start, goal }).
+  * **NEW**: `compileLayout(layout: Layout)` → `MazeData` for map loading.
+  * **NEW**: `loadLayout(id: string)` → `Promise<MazeData>` for catalog integration.
   * Helpers: `isWall(a,b)`, `inBounds(cell)`.
 
 * **`/lib/executor.ts`**
   * Pure step engine: `simulate(maze, pos, cmd)` → `{nextPos, ok, hitWallAt?}`
   * Runner: `runQueue(queue, tickMs, onStep, onError, onDone)` — no React inside.
+  * **UNCHANGED**: Performance optimized for larger maps (up to 20×20).
 
-* **`/lib/player-management.ts`** *(NEW)*
+* **`/lib/player-management.ts`**
   * Player configuration utilities.
   * Default player templates and validation.
   * Player state management helpers.
+
+* **`/lib/viewport.ts`** *(NEW)*
+  * Viewport state management: `ViewportState` with scroll coordinates and follow mode.
+  * Follow-cam algorithm: computes safe frame and animates scroll to keep player visible.
+  * Performance optimization: `will-change: transform`, translate3d for smooth pans.
 

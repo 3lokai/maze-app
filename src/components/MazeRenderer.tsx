@@ -4,12 +4,13 @@ import { MAZE_DATA, getCellType } from "@/lib/maze";
 import type { Cell, PlayerId, MazeData } from "@/types/maze-app";
 import { PlayerToken } from "./PlayerToken";
 import { CollisionFeedback } from "./CollisionFeedback";
+import { useGameStore } from "@/store/gameStore";
 
 interface MazeRendererProps {
   className?: string;
   maze?: MazeData;
-  positions?: Record<PlayerId, Cell>;
-  trails?: Record<PlayerId, Cell[]>;
+  positions?: Partial<Record<PlayerId, Cell>>;
+  trails?: Partial<Record<PlayerId, Cell[]>>;
   currentPlayer?: PlayerId;
   collisionCell?: Cell | null;
   isColliding?: boolean;
@@ -23,75 +24,34 @@ interface MazeRendererProps {
 export function MazeRenderer({ 
   className = "", 
   maze = MAZE_DATA,
-  positions = { 1: { r: 0, c: 0 }, 2: { r: 0, c: 0 } },
-  trails = { 1: [{ r: 0, c: 0 }], 2: [{ r: 0, c: 0 }] },
+  positions = { 1: { r: 0, c: 0 } },
+  trails = { 1: [{ r: 0, c: 0 }] },
   currentPlayer = 1,
   collisionCell = null,
   isColliding = false,
   theme,
   previewPath = false
 }: MazeRendererProps) {
-  // Get the actual path route from start to goal
-  const getPathRoute = () => {
-    const pathRoute: Cell[] = [];
-    const visited = new Set<string>();
-    
-    const dfs = (current: Cell): boolean => {
-      const key = `${current.r},${current.c}`;
-      if (visited.has(key)) return false;
-      visited.add(key);
-      
-      pathRoute.push(current);
-      
-      // Check if we reached the goal
-      if (current.r === maze.goal.r && current.c === maze.goal.c) {
-        return true;
-      }
-      
-      // Get neighbors and try each one
-      const neighbors = maze.graph[key];
-      if (neighbors) {
-        for (const neighborKey of neighbors) {
-          const [r, c] = neighborKey.split(',').map(Number);
-          const neighbor = { r, c };
-          if (dfs(neighbor)) {
-            return true;
-          }
-        }
-      }
-      
-      // If no path found, remove this cell from the route
-      pathRoute.pop();
-      return false;
-    };
-    
-    dfs(maze.start);
-    return pathRoute;
-  };
-
-  const pathRoute = getPathRoute();
-  const isInPathRoute = (cell: Cell) => {
-    return pathRoute.some(pathCell => pathCell.r === cell.r && pathCell.c === cell.c);
-  };
+  const { getActivePlayers } = useGameStore();
+  const activePlayers = getActivePlayers();
 
   const renderCell = (row: number, col: number) => {
     const cell: Cell = { r: row, c: col };
     const cellType = getCellType(maze, cell);
     
-    // Check if this cell is part of the actual path route
-    const isInRoute = isInPathRoute(cell);
-    
     let cellClasses = "cell w-full h-full flex items-center justify-center relative";
     let content = null;
     
-    // Check for player trails first (background)
-    const player1Trail = trails[1].some(pos => pos.r === row && pos.c === col);
-    const player2Trail = trails[2].some(pos => pos.r === row && pos.c === col);
+    // Check for player trails first (background) - handle partial records
+    const playerTrails = activePlayers.map(playerId => ({
+      playerId,
+      hasTrail: trails[playerId]?.some(pos => pos.r === row && pos.c === col) || false
+    }));
     
-    if (player1Trail) {
-      cellClasses += " trail-emerald";
-    } else if (player2Trail) {
-      cellClasses += " trail-indigo";
+    // Apply trail styling (simplified for multiple players)
+    const hasAnyTrail = playerTrails.some(p => p.hasTrail);
+    if (hasAnyTrail) {
+      cellClasses += " trail-emerald"; // Use single trail color for simplicity
     }
     
     // Add preview path visualization if enabled
@@ -122,38 +82,41 @@ export function MazeRenderer({
         break;
       case 'path':
       default:
-        if (isInRoute) {
-          // Highlight cells that are part of the actual path route
-          cellClasses += " bg-gradient-to-br from-green-100 to-emerald-100 border-2 border-green-300";
-          content = (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-2 h-2 bg-green-500 rounded-full opacity-60"></div>
-            </div>
-          );
-        } else {
-          // Regular path cells (not part of the route)
-          cellClasses += " bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200";
-        }
+        // Regular path cells - removed green dots visualization
+        cellClasses += " bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200";
         break;
     }
     
-    // Check for player tokens (foreground)
-    const player1Here = positions[1].r === row && positions[1].c === col;
-    const player2Here = positions[2].r === row && positions[2].c === col;
+    // Check for player tokens (foreground) - support 1-4 players
+    const playersHere = activePlayers.filter(playerId => 
+      positions[playerId]?.r === row && positions[playerId]?.c === col
+    );
     
     let playerContent = null;
-    if (player1Here && player2Here) {
-      // Both players in same cell - stack them
-      playerContent = (
-        <div className="flex flex-col gap-1">
-          <PlayerToken player={1} isCurrentPlayer={currentPlayer === 1} />
-          <PlayerToken player={2} isCurrentPlayer={currentPlayer === 2} />
-        </div>
-      );
-    } else if (player1Here) {
-      playerContent = <PlayerToken player={1} isCurrentPlayer={currentPlayer === 1} />;
-    } else if (player2Here) {
-      playerContent = <PlayerToken player={2} isCurrentPlayer={currentPlayer === 2} />;
+    if (playersHere.length > 0) {
+      if (playersHere.length === 1) {
+        // Single player in this cell
+        const playerId = playersHere[0];
+        playerContent = (
+          <PlayerToken 
+            player={playerId} 
+            isCurrentPlayer={currentPlayer === playerId} 
+          />
+        );
+      } else {
+        // Multiple players in same cell - stack them
+        playerContent = (
+          <div className="flex flex-col gap-1">
+            {playersHere.map(playerId => (
+              <PlayerToken 
+                key={playerId}
+                player={playerId} 
+                isCurrentPlayer={currentPlayer === playerId} 
+              />
+            ))}
+          </div>
+        );
+      }
     }
     
     // Check if this cell is the collision cell
@@ -176,12 +139,12 @@ export function MazeRenderer({
         label += ', Path';
       }
       
-      if (player1Here && player2Here) {
-        label += ', Both players present';
-      } else if (player1Here) {
-        label += ', Player 1 present';
-      } else if (player2Here) {
-        label += ', Player 2 present';
+      if (playersHere.length > 0) {
+        if (playersHere.length === 1) {
+          label += `, Player ${playersHere[0]} present`;
+        } else {
+          label += `, ${playersHere.length} players present`;
+        }
       }
       
       if (isCollisionCell) {

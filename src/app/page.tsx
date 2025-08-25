@@ -26,7 +26,6 @@ export default function Home() {
     trails, 
     currentPlayer, 
     status,
-    wins,
     winner,
     showCelebration,
     setShowCelebration,
@@ -35,12 +34,14 @@ export default function Home() {
     commandQueue,
     addCommand,
     removeLastCommand,
+    removeCommandAtIndex,
     clearCommandQueue,
     setPosition,
     addToTrail,
     incrementCrash,
     setStatus,
-    resetGame
+    resetGame,
+    playerConfigs
   } = useGameStore();
 
   const { settings } = useAccessibility();
@@ -85,6 +86,9 @@ export default function Home() {
   // Set up executor for current player
   const currentPosition = positions[currentPlayer];
   
+  // Safety check: if current player position doesn't exist, use maze start position
+  const safeCurrentPosition = currentPosition || (mazeData?.start || { r: 0, c: 0 });
+  
   // Convert CommandToken to CmdToken for executor
   const convertedQueue = commandQueue.map(token => ({
     dir: token.direction,
@@ -97,7 +101,7 @@ export default function Home() {
     stepQueue,
     stopExecution,
   } = useExecutor(
-    currentPosition,
+    safeCurrentPosition,
     (position) => setPosition(currentPlayer, position),
     (position) => addToTrail(currentPlayer, position),
     {
@@ -146,6 +150,11 @@ export default function Home() {
   // Use loaded maze data or fallback to hardcoded
   const currentMazeData = mazeData || MAZE_DATA;
   
+  // Get current player configuration
+  const currentPlayerConfig = playerConfigs[currentPlayer];
+  const currentPlayerEmoji = currentPlayerConfig?.emoji || '🐢';
+  const currentPlayerName = currentPlayerConfig?.name || `Player ${currentPlayer}`;
+  
   return (
     <div className="min-h-screen bg-background p-4">
       {/* Skip Link for Accessibility */}
@@ -177,12 +186,12 @@ export default function Home() {
                       ? "bg-primary text-primary-foreground shadow-primary/50" 
                       : "bg-secondary text-secondary-foreground shadow-secondary/50"
                   )}
-                  aria-label={`${currentPlayer === 1 ? 'Turtle' : 'Fox'} Player ${currentPlayer}'s turn`}
+                  aria-label={`${currentPlayerEmoji} ${currentPlayerName}'s turn`}
                 >
                   <span className="mr-1" aria-hidden="true">
-                    {currentPlayer === 1 ? '🐢' : '🦊'}
+                    {currentPlayerEmoji}
                   </span>
-                  Player {currentPlayer}
+                  {currentPlayerName}
                 </Badge>
               </div>
               <MazeRenderer 
@@ -200,7 +209,6 @@ export default function Home() {
 
           {/* Game Rail - Right Column */}
           <GameRail
-            wins={wins}
             commandQueue={commandQueue}
             executionState={executionState}
             onAddCommand={addCommand}
@@ -209,6 +217,7 @@ export default function Home() {
             onRun={() => runQueue(convertedQueue)}
             onStep={() => stepQueue(convertedQueue)}
             onStop={stopExecution}
+            onRemoveCommand={removeCommandAtIndex}
           />
         </main>
       </div>

@@ -8,7 +8,8 @@ import { Play, Square, StepForward, Undo2, RotateCcw } from "lucide-react";
 import { DirectionButtons } from "./DirectionButtons";
 import { NumberPad } from "./NumberPad";
 import { CommandQueue } from "./CommandQueue";
-import type { Dir, Magnitude1to10 } from "@/types/maze-app";
+import { useGameStore } from "@/store/gameStore";
+import type { Dir, Magnitude1to10, PlayerId } from "@/types/maze-app";
 import type { ExecutionState } from "@/types/execution";
 
 interface CommandBuilderProps {
@@ -19,7 +20,9 @@ interface CommandBuilderProps {
   onRun: () => void;
   onStep: () => void;
   onStop: () => void;
+  onRemoveCommand?: (index: number) => void;
   executionState: ExecutionState;
+  currentPlayer: number;
 }
 
 export function CommandBuilder({ 
@@ -30,14 +33,20 @@ export function CommandBuilder({
   onRun, 
   onStep, 
   onStop, 
-  executionState 
+  onRemoveCommand,
+  executionState,
+  currentPlayer
 }: CommandBuilderProps) {
   const [selectedDirection, setSelectedDirection] = useState<Dir | null>(null);
   const [selectedNumber, setSelectedNumber] = useState<Magnitude1to10 | null>(null);
 
+  const { getPlayerColor } = useGameStore();
   const { isRunning, isStepping, currentStep, totalSteps } = executionState;
   const hasCommands = queue.length > 0;
   const isExecuting = isRunning || isStepping;
+  
+  // Get player color for progress bar theming
+  const playerColor = getPlayerColor(currentPlayer as PlayerId);
 
   const handleDirectionClick = (direction: Dir) => {
     setSelectedDirection(direction);
@@ -89,6 +98,7 @@ export function CommandBuilder({
         <CommandQueue 
           queue={queue}
           aria-labelledby="queue-label"
+          onRemoveCommand={onRemoveCommand}
         />
       </div>
 
@@ -130,6 +140,9 @@ export function CommandBuilder({
           <Progress 
             value={(currentStep / totalSteps) * 100} 
             className="h-3 transition-all duration-300"
+            style={{
+              '--progress-color': playerColor
+            } as React.CSSProperties}
           />
         </div>
       )}

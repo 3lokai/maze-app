@@ -6,15 +6,23 @@ on:
   push:
     branches: [main, develop]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  checks: read
+
 jobs:
-  coderabbit-review:
+  # CodeRabbit is a GitHub App that runs automatically on PRs
+  # This job provides a placeholder and documentation
+  coderabbit-info:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for better analysis
+          fetch-depth: 0
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,44 +33,62 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Install CodeRabbit
-        run: npm install -g @coderabbit/cli
-      
-      - name: Run CodeRabbit analysis
-        env:
-          CODERABBIT_API_KEY: ${{ secrets.CODERABBIT_API_KEY }}
-          CODERABBIT_PROJECT_ID: ${{ secrets.CODERABBIT_PROJECT_ID }}
+      - name: Run basic quality checks
         run: |
-          coderabbit analyze \
-            --format markdown \
-            --output .coderabbit/report.md \
-            --verbose
+          echo "🔍 Running basic quality checks..."
+          npm run lint
+          npm run type-check
+          npm run test
+          npm run build
+          echo "✅ Basic quality checks passed"
       
-      - name: Upload CodeRabbit report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coderabbit-report
-          path: .coderabbit/report.md
-          retention-days: 30
+      - name: Generate CodeRabbit integration info
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "# 🤖 CodeRabbit Integration Information" > coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "## 📋 Setup Required" >> coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "To enable CodeRabbit AI code review:" >> coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "1. **Install CodeRabbit GitHub App**: Visit [CodeRabbit](https://coderabbit.ai) and install the GitHub App" >> coderabbit-info.md
+          echo "2. **Authorize Repository**: Grant CodeRabbit access to this repository" >> coderabbit-info.md
+          echo "3. **Configure Settings**: Set up review preferences in CodeRabbit dashboard" >> coderabbit-info.md
+          echo "4. **Create coderabbit.yaml**: Add configuration file to repository root" >> coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "## 🎯 Features Available" >> coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "- ✅ AI-powered code review" >> coderabbit-info.md
+          echo "- ✅ Pull request summaries" >> coderabbit-info.md
+          echo "- ✅ Inline code suggestions" >> coderabbit-info.md
+          echo "- ✅ Security analysis" >> coderabbit-info.md
+          echo "- ✅ Performance insights" >> coderabbit-info.md
+          echo "- ✅ Custom review instructions" >> coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "## 📊 Current Status" >> coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "- Basic quality checks: ✅ PASSED" >> coderabbit-info.md
+          echo "- TypeScript compilation: ✅ PASSED" >> coderabbit-info.md
+          echo "- ESLint validation: ✅ PASSED" >> coderabbit-info.md
+          echo "- Build process: ✅ PASSED" >> coderabbit-info.md
+          echo "" >> coderabbit-info.md
+          echo "---" >> coderabbit-info.md
+          echo "*CodeRabbit integration ready for setup*" >> coderabbit-info.md
       
-      - name: Comment PR with CodeRabbit report
+      - name: Comment PR with CodeRabbit info
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const reportPath = '.coderabbit/report.md';
+            const infoPath = 'coderabbit-info.md';
             
-            if (fs.existsSync(reportPath)) {
-              const report = fs.readFileSync(reportPath, 'utf8');
+            if (fs.existsSync(infoPath)) {
+              const info = fs.readFileSync(infoPath, 'utf8');
               
-              // Create comment with report
-              const comment = `## 🤖 CodeRabbit Analysis Report
+              const comment = `## 🤖 CodeRabbit Integration Status
               
-              ${report}
-              
-              ---
-              *This report was generated automatically by CodeRabbit.*`;
+              ${info}`;
               
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
@@ -71,56 +97,3 @@ jobs:
                 body: comment
               });
             }
-      
-      - name: Fail on critical issues
-        run: |
-          if grep -q "severity: error" .coderabbit/report.md; then
-            echo "❌ Critical issues found in CodeRabbit analysis"
-            exit 1
-          fi
-      
-      - name: Quality gate check
-        run: |
-          # Check coverage
-          if grep -q "coverage.*below.*80%" .coderabbit/report.md; then
-            echo "❌ Code coverage below 80%"
-            exit 1
-          fi
-          
-          # Check complexity
-          if grep -q "complexity.*above.*10" .coderabbit/report.md; then
-            echo "❌ Cyclomatic complexity above 10"
-            exit 1
-          fi
-          
-          echo "✅ Quality gates passed"
-
-  # Additional quality checks
-  quality-checks:
-    runs-on: ubuntu-latest
-    needs: coderabbit-review
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run linting
-        run: npm run lint
-      
-      - name: Run type checking
-        run: npm run type-check
-      
-      - name: Run tests
-        run: npm run test
-      
-      - name: Build project
-        run: npm run build
