@@ -148,12 +148,21 @@ export function executeStep(maze: MazeData, from: Cell, dir: Dir): SimStepResult
 /**
  * Optimized path validation for larger grids
  * Uses early termination and efficient bounds checking
+ * 
+ * @returns Object containing:
+ *   - finalPosition: The final cell position after executing the path
+ *   - isValid: Whether the path is valid (false if truncated)
+ *   - hitWallAt: Step index where wall collision occurred (if any)
+ *   - truncated: Whether the validation was truncated due to performance limits
+ * 
+ * Note: When truncated=true, isValid will be false as a conservative measure.
+ * Callers should handle truncated paths by performing full validation.
  */
 export function validatePath(
   maze: MazeData, 
   from: Cell, 
   tokens: readonly CmdToken[]
-): { finalPosition: Cell; isValid: boolean; hitWallAt?: number } {
+): { finalPosition: Cell; isValid: boolean; hitWallAt?: number; truncated?: boolean } {
   let current = from;
   let stepIndex = 0;
   
@@ -188,8 +197,8 @@ export function validatePath(
       }
     }
     
-    // If we hit the limit, assume the path is valid (will be validated during execution)
-    return { finalPosition: current, isValid: true };
+    // If we hit the limit, mark as truncated and return conservative result
+    return { finalPosition: current, isValid: false, truncated: true };
   }
   
   // Standard validation for smaller grids
@@ -250,25 +259,74 @@ export function getQueueStepCount(tokens: readonly CmdToken[]): number {
 
 /**
  * Check if a queue would reach the goal
+ * Handles truncated validation by performing full execution when needed
  */
 export function wouldReachGoal(
   maze: MazeData, 
   from: Cell, 
   tokens: readonly CmdToken[]
 ): boolean {
-  const { finalPosition } = validatePath(maze, from, tokens);
+  const { finalPosition, truncated } = validatePath(maze, from, tokens);
+  
+  // If the path was truncated, we need to do a full validation
+  if (truncated) {
+    // Perform full validation without early termination
+    let current = from;
+    for (const token of tokens) {
+      for (let i = 0; i < token.n; i++) {
+        const result = executeStep(maze, current, token.dir);
+        
+        if (!result.ok) {
+          return false; // Hit a wall, can't reach goal
+        }
+        
+        current = result.next;
+        
+        if (result.reachedGoal) {
+          return true; // Reached goal
+        }
+      }
+    }
+    // If we complete the full path, check if final position is goal
+    return isGoal(maze, current);
+  }
+  
   return isGoal(maze, finalPosition);
 }
 
 /**
  * Get the final position after executing a queue
+ * Handles truncated validation by performing full execution when needed
  */
 export function getFinalPosition(
   maze: MazeData, 
   from: Cell, 
   tokens: readonly CmdToken[]
 ): Cell {
-  const { finalPosition } = validatePath(maze, from, tokens);
+  const { finalPosition, truncated } = validatePath(maze, from, tokens);
+  
+  // If the path was truncated, we need to do a full execution to get accurate final position
+  if (truncated) {
+    // Perform full execution without early termination
+    let current = from;
+    for (const token of tokens) {
+      for (let i = 0; i < token.n; i++) {
+        const result = executeStep(maze, current, token.dir);
+        
+        if (!result.ok) {
+          return current; // Return current position if we hit a wall
+        }
+        
+        current = result.next;
+        
+        if (result.reachedGoal) {
+          return current; // Return goal position if reached
+        }
+      }
+    }
+    return current; // Return final position after full execution
+  }
+  
   return finalPosition;
 }
 
