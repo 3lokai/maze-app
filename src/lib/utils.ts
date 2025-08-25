@@ -232,12 +232,26 @@ export const gridUtils = {
     viewportHeight: number
   ) => {
     const cellSize = Math.min(viewportWidth / gridWidth, viewportHeight / gridHeight);
-    const playerX = playerPosition.c * cellSize;
-    const playerY = playerPosition.r * cellSize;
+    
+    // Center on cell midpoint
+    const playerX = playerPosition.c * cellSize + cellSize / 2;
+    const playerY = playerPosition.r * cellSize + cellSize / 2;
+    
+    // Calculate desired scroll positions to center player
+    const desiredScrollX = playerX - viewportWidth / 2;
+    const desiredScrollY = playerY - viewportHeight / 2;
+    
+    // Calculate content dimensions
+    const contentWidth = gridWidth * cellSize;
+    const contentHeight = gridHeight * cellSize;
+    
+    // Clamp scroll positions to valid range
+    const scrollX = Math.max(0, Math.min(desiredScrollX, contentWidth - viewportWidth));
+    const scrollY = Math.max(0, Math.min(desiredScrollY, contentHeight - viewportHeight));
     
     return {
-      scrollX: Math.max(0, playerX - viewportWidth / 2),
-      scrollY: Math.max(0, playerY - viewportHeight / 2),
+      scrollX,
+      scrollY,
     };
   },
 };
