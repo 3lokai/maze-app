@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Header, Footer } from "@/components/layout";
 import "./globals.css";
 import "@/styles/accessibility.css";
 
@@ -14,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Coding Maze - 2-Player Programming Challenge",
-  description: "A 2-player maze game where players program movement sequences to reach the goal",
+  title: "Coding Maze - Teach Coding Through Play",
+  description: "A fun, interactive maze game that builds programming logic and problem-solving skills. Perfect for kids learning to code through visual programming.",
+  keywords: "coding for kids, programming game, educational game, maze game, visual programming, learn to code",
 };
 
 export default function RootLayout({
@@ -28,7 +30,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

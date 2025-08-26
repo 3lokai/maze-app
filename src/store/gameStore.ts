@@ -53,7 +53,7 @@ interface GameState {
   onMapChange: (maze: MazeData) => void;
   
   // Player management actions
-  addPlayer: () => void;
+  addPlayer: (mazeStartPosition?: Cell) => void;
   removePlayer: (playerId: PlayerId) => void;
   updatePlayerConfig: (playerId: PlayerId, config: Partial<PlayerConfig>) => void;
   getActivePlayers: () => PlayerId[];
@@ -238,7 +238,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   // Player management actions
-  addPlayer: () =>
+  addPlayer: (mazeStartPosition?: Cell) =>
     set((state) => {
       const activePlayers = state.getActivePlayers();
       if (activePlayers.length >= getMaxPlayers()) {
@@ -248,14 +248,17 @@ export const useGameStore = create<GameState>((set, get) => ({
       // Find the next available player ID
       const nextPlayerId = (activePlayers.length + 1) as PlayerId;
       
+      // Use provided maze start position or fall back to default
+      const startPosition = mazeStartPosition || DEFAULT_INITIAL_POSITION;
+      
       return {
         positions: {
           ...state.positions,
-          [nextPlayerId]: DEFAULT_INITIAL_POSITION,
+          [nextPlayerId]: startPosition,
         },
         trails: {
           ...state.trails,
-          [nextPlayerId]: [DEFAULT_INITIAL_POSITION],
+          [nextPlayerId]: [startPosition],
         },
         playerConfigs: {
           ...state.playerConfigs,

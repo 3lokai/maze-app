@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { EmojiPicker } from "@/components/settings/EmojiPicker";
 import { useGameStore } from "@/store/gameStore";
+import { useMazeLayout } from "@/hooks/useMazeLayout";
 import { PlayerId } from "@/types/maze-app";
 import { getMaxPlayers, getMinPlayers, type PlayerEmoji } from "@/types/maze";
 import { UserPlus, UserMinus, Edit3, Save, X } from "lucide-react";
@@ -17,6 +18,8 @@ export function PlayerManagement() {
     removePlayer,
     updatePlayerConfig,
   } = useGameStore();
+
+  const { mazeData } = useMazeLayout();
 
   const [editingPlayer, setEditingPlayer] = useState<PlayerId | null>(null);
   const [editName, setEditName] = useState("");
@@ -58,6 +61,12 @@ export function PlayerManagement() {
     if (editingPlayer === playerId) {
       handleCancelEdit();
     }
+  };
+
+  const handleAddPlayer = () => {
+    // Pass the current maze start position to ensure new players start at the correct position
+    const mazeStartPosition = mazeData?.start;
+    addPlayer(mazeStartPosition);
   };
 
   return (
@@ -141,7 +150,7 @@ export function PlayerManagement() {
             {activePlayers.length} of {getMaxPlayers()} players
           </div>
           <Button
-            onClick={addPlayer}
+            onClick={handleAddPlayer}
             disabled={!canAddPlayer}
             className="flex items-center gap-2"
           >

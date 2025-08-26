@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useGameStore } from "@/store/gameStore";
 import { PlayerId, Cell } from "@/types/maze-app";
 
 interface StatsDrawerProps {
@@ -11,6 +12,8 @@ interface StatsDrawerProps {
 }
 
 export function StatsDrawer({ wins, crashes, trails, currentPlayer }: StatsDrawerProps) {
+  const { playerConfigs } = useGameStore();
+  
   // Get active players (players with any data recorded)
   const activePlayers = Object.keys(wins).map(Number) as PlayerId[];
   
@@ -78,7 +81,7 @@ export function StatsDrawer({ wins, crashes, trails, currentPlayer }: StatsDrawe
               <CardTitle className="flex items-center gap-2">
                 <span className="text-2xl">{playerEmojis[playerId]}</span>
                 <span className={currentPlayer === playerId ? `${playerColorClasses[playerId]} font-bold` : 'text-foreground'}>
-                  Player {playerId} {currentPlayer === playerId && '(Active)'}
+                  {playerConfigs[playerId]?.name || `Player ${playerId}`} {currentPlayer === playerId && '(Active)'}
                 </span>
               </CardTitle>
             </CardHeader>
@@ -144,7 +147,7 @@ export function StatsDrawer({ wins, crashes, trails, currentPlayer }: StatsDrawe
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Leader</span>
                     <Badge variant="secondary" className="stats-badge-warning">
-                      {playerEmojis[leader.playerId]} Player {leader.playerId}
+                      {playerEmojis[leader.playerId]} {playerConfigs[leader.playerId]?.name || `Player ${leader.playerId}`}
                     </Badge>
                   </div>
                 );

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { Confetti, type ConfettiRef } from '@/components/magicui/confetti';
+import { useGameStore } from '@/store/gameStore';
 import type { PlayerId } from '@/types/maze-app';
 import { performanceUtils } from '@/lib/maze';
 
@@ -13,10 +14,16 @@ interface CelebrationProps {
 }
 
 export function Celebration({ show, winner, onComplete, mazeSize }: CelebrationProps) {
+  const { playerConfigs } = useGameStore();
   const confettiRef = useRef<ConfettiRef>(null);
   const firingCountRef = useRef(0);
-  const maxFirings = 10;
+  const maxFirings = 5; // Limit confetti firings for performance
   const performanceMode = mazeSize ? performanceUtils.getPerformanceMode(mazeSize.width, mazeSize.height) : 'standard';
+
+  // Get winner's actual name and emoji from player configs
+  const winnerConfig = winner ? playerConfigs[winner] : null;
+  const winnerName = winnerConfig?.name || `Player ${winner}`;
+  const winnerEmoji = winnerConfig?.emoji || '🐢';
 
   // Performance-optimized confetti configuration
   const getConfettiConfig = useCallback(() => {
@@ -111,10 +118,10 @@ export function Celebration({ show, winner, onComplete, mazeSize }: CelebrationP
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="bg-white/90 backdrop-blur-sm rounded-lg p-8 shadow-lg pointer-events-auto">
           <h2 className="text-3xl font-bold text-center mb-4">
-            🎉 Player {winner} Wins! 🎉
+            🎉 {winnerEmoji} {winnerName} Wins! 🎉
           </h2>
           <p className="text-lg text-center text-gray-600">
-            Congratulations! You've reached the goal first!
+            Congratulations {winnerEmoji} {winnerName}! You've reached the goal first!
           </p>
         </div>
       </div>
