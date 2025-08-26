@@ -160,9 +160,16 @@ export const useGameStore = create<GameState>((set, get) => ({
     })),
 
   switchPlayer: () =>
-    set((state) => ({
-      currentPlayer: state.currentPlayer === 1 ? 2 : 1,
-    })),
+    set((state) => {
+      const activePlayers = state.getActivePlayers();
+      const currentIndex = activePlayers.indexOf(state.currentPlayer);
+      const nextIndex = (currentIndex + 1) % activePlayers.length;
+      const nextPlayer = activePlayers[nextIndex];
+      
+      return {
+        currentPlayer: nextPlayer,
+      };
+    }),
 
   setStatus: (status: GameStatus) =>
     set({ status }),
@@ -245,8 +252,21 @@ export const useGameStore = create<GameState>((set, get) => ({
         return state; // Cannot add more players
       }
       
-      // Find the next available player ID
-      const nextPlayerId = (activePlayers.length + 1) as PlayerId;
+      // Find the next available player ID by scanning from 1 to max players
+      const usedPlayerIds = new Set(activePlayers);
+      let nextPlayerId: PlayerId | undefined;
+      
+      for (let i = 1; i <= getMaxPlayers(); i++) {
+        if (!usedPlayerIds.has(i as PlayerId)) {
+          nextPlayerId = i as PlayerId;
+          break;
+        }
+      }
+      
+      // If no available ID found, cannot add player
+      if (!nextPlayerId) {
+        return state; // Cannot add more players
+      }
       
       // Use provided maze start position or fall back to default
       const startPosition = mazeStartPosition || DEFAULT_INITIAL_POSITION;

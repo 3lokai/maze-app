@@ -143,8 +143,25 @@ export default function GamePage() {
   // Set up executor for current player
   const currentPosition = positions[currentPlayer];
   
-  // Safety check: if current player position doesn't exist, use maze start position
-  const safeCurrentPosition = currentPosition || (mazeData?.start || { r: 0, c: 0 });
+  // Safety check: validate position has numeric r and c properties
+  const safeCurrentPosition = (() => {
+    // First check if currentPosition exists and has valid numeric properties
+    if (currentPosition && 
+        typeof currentPosition.r === 'number' && 
+        typeof currentPosition.c === 'number') {
+      return currentPosition;
+    }
+    
+    // Then check if mazeData.start exists and has valid numeric properties
+    if (mazeData?.start && 
+        typeof mazeData.start.r === 'number' && 
+        typeof mazeData.start.c === 'number') {
+      return mazeData.start;
+    }
+    
+    // Finally fall back to default position
+    return { r: 0, c: 0 };
+  })();
   
   // Convert CommandToken to CmdToken for executor
   const convertedQueue = commandQueue.map(token => ({
@@ -284,10 +301,10 @@ export default function GamePage() {
       </a>
       
       <div className="mx-auto max-w-7xl">
-                 {/* Game Header */}
-         <div className="mb-4">
-           <Header />
-         </div>
+        {/* Game Header */}
+        <div className="mb-4">
+          <Header />
+        </div>
 
         {/* Performance Monitor for Large Grids */}
         {currentMazeData && (currentMazeData.width > 15 || currentMazeData.height > 15) && (

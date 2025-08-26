@@ -51,11 +51,11 @@ export default function Home() {
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 aria-label="Start playing the coding maze game"
               >
-                                 <Link href="/game">
-                   <Play className="w-5 h-5 mr-2" />
-                   Play Now
-                   <ArrowRight className="w-4 h-4 ml-2" />
-                 </Link>
+                <Link href="/game">
+                  <Play className="w-5 h-5 mr-2" />
+                  Play Now
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
               </Button>
 
               <Button
@@ -65,11 +65,11 @@ export default function Home() {
                 className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 px-8 py-4 text-lg font-semibold bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
                 aria-label="Learn more about the educational benefits for parents"
               >
-                                 <Link href="/parents">
-                   <Users className="w-5 h-5 mr-2" />
-                   For Parents
-                   <ArrowRight className="w-4 h-4 ml-2" />
-                 </Link>
+                <Link href="/parents">
+                  <Users className="w-5 h-5 mr-2" />
+                  For Parents
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -208,11 +208,11 @@ export default function Home() {
             className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
             aria-label="Start your coding journey now"
           >
-                         <Link href="/game">
-               <Play className="w-5 h-5 mr-2" />
-               Start Learning Now
-               <ArrowRight className="w-4 h-4 ml-2" />
-             </Link>
+            <Link href="/game">
+              <Play className="w-5 h-5 mr-2" />
+              Start Learning Now
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
           </Button>
         </div>
       </section>
